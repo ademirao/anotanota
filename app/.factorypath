@@ -1,0 +1,6 @@
+<factorypath>
+    <factorypathentry kind="EXTJAR" id="/home/ademirao/git_repos/anotanota/libs/dagger/dagger-1.2.2.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="EXTJAR" id="/home/ademirao/git_repos/anotanota/libs/dagger/dagger-compiler-1.2.2.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="EXTJAR" id="/home/ademirao/git_repos/anotanota/libs/dagger/javawriter-2.5.0.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="EXTJAR" id="/home/ademirao/git_repos/anotanota/libs/dagger/javax.inject-1.jar" enabled="true" runInBatchMode="false"/>
+</factorypath>
