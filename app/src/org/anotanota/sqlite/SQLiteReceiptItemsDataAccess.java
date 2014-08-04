@@ -41,7 +41,7 @@ public class SQLiteReceiptItemsDataAccess extends SQLiteOpenHelper implements
     super(context,
         config.getDatabaseName() + config.getUserName() + TABLE_NAME, null,
         config.getDatabaseVersion());
-    mTableName = TABLE_NAME;
+    mTableName = TABLE_NAME + "_" + config.getUserName();
   }
 
   @Override
