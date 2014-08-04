@@ -1,9 +1,0 @@
-digraph G1 {
-  concentrate = true;
-  n2 [label="@App$MainThread Executor"];
-  n3 [label="@App$MainThread Handler"];
-  n2 -> n3;
-  n4 [label="Activity$ActivityModules"];
-  n5 [label="@App$ActivityModules Object[]"];
-  n4 -> n5;
-}
