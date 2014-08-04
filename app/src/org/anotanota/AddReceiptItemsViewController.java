@@ -11,6 +11,8 @@ import javax.inject.Provider;
 
 import org.anotanota.framework.UIViewController;
 import org.anotanota.model.Receipt;
+import org.anotanota.model.ReceiptItem;
+import org.anotanota.model.ReceiptItemsDataAccess;
 import org.anotanota.model.ReceiptsDataAccess;
 
 import android.content.Context;
@@ -38,6 +40,7 @@ public class AddReceiptItemsViewController implements UIViewController {
   private final AssetManager mAssetManager;
   private final ThreadPoolExecutor mPool;
   private final ReceiptsDataAccess mReceiptsDataAccess;
+  private final ReceiptItemsDataAccess mReceiptItemsDataAccess;
 
   private static final List<String> kPhotosFolders = Arrays
       .asList("tesseract/examples");
@@ -49,6 +52,7 @@ public class AddReceiptItemsViewController implements UIViewController {
     Provider<ListView> listView,
     LayoutInflater layoutInflater,
     ReceiptsDataAccess receiptsDataAccess,
+    ReceiptItemsDataAccess receiptItemsDataAccess,
     @Anotanota.OCRThread ThreadPoolExecutor ocrThreadPool) {
     mActionBar = actionBar;
     mFilesListProvider = listView;
@@ -57,6 +61,7 @@ public class AddReceiptItemsViewController implements UIViewController {
     mAssetManager = assets;
     mPool = ocrThreadPool;
     mReceiptsDataAccess = receiptsDataAccess;
+    mReceiptItemsDataAccess = receiptItemsDataAccess;
   }
 
   public static String ocrReceipt(String filePath) {
@@ -118,20 +123,9 @@ public class AddReceiptItemsViewController implements UIViewController {
     return linearLayout;
   }
 
-  private class ShowResult implements UIViewController {
-    private final String mResultText;
-
-    public ShowResult(String resultText) {
-      mResultText = resultText;
-    }
-
-    @Override
-    public View loadView() {
-      TextView textView = new TextView(mContext);
-      textView.setText(mResultText);
-      // TODO Auto-generated method stub
-      return textView;
-    }
+  private static List<ReceiptItem> findItems(String text) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   private final void loadFilePathView(File file, LinearLayout view) {
@@ -151,6 +145,7 @@ public class AddReceiptItemsViewController implements UIViewController {
                 .setContent(text).get();
             mReceiptsDataAccess.createReceipt(receipt);
           }
+
         });
       }
     });

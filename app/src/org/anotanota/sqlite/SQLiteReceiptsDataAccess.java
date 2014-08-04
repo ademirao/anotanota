@@ -21,7 +21,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 public class SQLiteReceiptsDataAccess extends SQLiteOpenHelper implements
     ReceiptsDataAccess {
   // Contacts table name
-  private static final String TABLE_PREFIX = "receipts";
+  private static final String TABLE_NAME = "receipts";
 
   // Contacts Table Columns names
   private static final String ID_FIELD = "id";
@@ -32,9 +32,10 @@ public class SQLiteReceiptsDataAccess extends SQLiteOpenHelper implements
 
   @Inject
   public SQLiteReceiptsDataAccess(Context context, SQLiteDataAccessConfig config) {
-    super(context, config.getDatabaseName() + config.getUserName()
-        + TABLE_PREFIX, null, config.getDatabaseVersion());
-    mTableName = TABLE_PREFIX + "_" + config.getUserName();
+    super(context,
+        config.getDatabaseName() + config.getUserName() + TABLE_NAME, null,
+        config.getDatabaseVersion());
+    mTableName = TABLE_NAME;
   }
 
   @Override
@@ -48,7 +49,7 @@ public class SQLiteReceiptsDataAccess extends SQLiteOpenHelper implements
   @Override
   public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     // Drop older table if existed
-    db.execSQL("DROP TABLE IF EXISTS " + TABLE_PREFIX);
+    db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
     // Create tables again
     onCreate(db);
   }

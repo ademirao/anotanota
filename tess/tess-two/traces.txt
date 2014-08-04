@@ -1,0 +1,58 @@
+
+
+----- pid 823 at 2014-07-22 19:38:56 -----
+Cmd line: org.anotanota
+
+DALVIK THREADS:
+"main" prio=5 tid=1 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4001d8e0 self=0xccb0
+  | sysTid=823 nice=0 sched=0/0 cgrp=default handle=-1345026008
+  | schedstat=( 236817467565 7136213605 3025 )
+  at com.googlecode.tesseract.android.TessBaseAPI.nativeGetUTF8Text(Native Method)
+  at com.googlecode.tesseract.android.TessBaseAPI.getUTF8Text(TessBaseAPI.java:407)
+  at org.anotanota.MainActivity.onCreate(MainActivity.java:63)
+  at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1047)
+  at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2627)
+  at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2679)
+  at android.app.ActivityThread.access$2300(ActivityThread.java:125)
+  at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2033)
+  at android.os.Handler.dispatchMessage(Handler.java:99)
+  at android.os.Looper.loop(Looper.java:123)
+  at android.app.ActivityThread.main(ActivityThread.java:4627)
+  at java.lang.reflect.Method.invokeNative(Native Method)
+  at java.lang.reflect.Method.invoke(Method.java:521)
+  at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:868)
+  at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:626)
+  at dalvik.system.NativeStart.main(Native Method)
+
+"Binder Thread #2" prio=5 tid=6 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4a694ac8 self=0x1142c8
+  | sysTid=829 nice=0 sched=0/0 cgrp=default handle=1318344
+  | schedstat=( 5157212 8555450 2 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Binder Thread #1" prio=5 tid=5 NATIVE
+  | group="main" sCount=1 dsCount=0 s=N obj=0x4a693cd0 self=0x12b5c8
+  | sysTid=828 nice=0 sched=0/0 cgrp=default handle=1293416
+  | schedstat=( 6464623 94584 3 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"JDWP" daemon prio=5 tid=4 VMWAIT
+  | group="system" sCount=1 dsCount=0 s=N obj=0x4a6922a0 self=0x1274b0
+  | sysTid=827 nice=0 sched=0/0 cgrp=default handle=1270584
+  | schedstat=( 14587217 131226855 21 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"Signal Catcher" daemon prio=5 tid=3 RUNNABLE
+  | group="system" sCount=0 dsCount=0 s=N obj=0x4a6921e8 self=0x145f48
+  | sysTid=826 nice=0 sched=0/0 cgrp=default handle=1268912
+  | schedstat=( 8846963 35972497 5 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+"HeapWorker" daemon prio=5 tid=2 VMWAIT
+  | group="system" sCount=1 dsCount=0 s=N obj=0x4650d098 self=0x137260
+  | sysTid=825 nice=0 sched=0/0 cgrp=default handle=1194784
+  | schedstat=( 51145005 190594997 17 )
+  at dalvik.system.NativeStart.run(Native Method)
+
+----- end 823 -----

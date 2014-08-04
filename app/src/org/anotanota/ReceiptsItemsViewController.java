@@ -6,7 +6,6 @@ import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import org.anotanota.framework.Activity;
 import org.anotanota.framework.UIViewController;
 import org.anotanota.model.ReceiptItem;
 import org.anotanota.model.ReceiptItemsDataAccess;
@@ -14,7 +13,6 @@ import org.anotanota.views.ArrayAdapterHelper;
 
 import android.support.v7.app.ActionBar;
 import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -24,25 +22,19 @@ import com.google.common.base.Function;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public class ReceiptsItemsViewController implements UIViewController {
-  private final Activity mActivity;
   private final ArrayAdapterHelper mListViewBuilder;
   private final Provider<ListView> mListViewProvider;
   private final ReceiptItemsDataAccess mDataAccess;
   private final Executor mExecutor;
-  private final LayoutInflater mLayoutInflater;
 
   @Inject
   public ReceiptsItemsViewController(ActionBar actionBar,
-    Activity activity,
-    LayoutInflater layoutInfrater,
     Provider<ListView> listViewProvider,
     ArrayAdapterHelper adapterBuilder,
     ReceiptItemsDataAccess dataAccess,
     Executor executor) {
-    mActivity = activity;
     mListViewBuilder = adapterBuilder;
     mDataAccess = dataAccess;
-    mLayoutInflater = layoutInfrater;
     mExecutor = executor;
     mListViewProvider = listViewProvider;
   }

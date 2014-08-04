@@ -1,5 +1,6 @@
 package org.anotanota;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -9,6 +10,8 @@ import javax.inject.Provider;
 import org.anotanota.framework.Navigation;
 import org.anotanota.framework.UIViewController;
 import org.anotanota.model.Receipt;
+import org.anotanota.model.ReceiptItem;
+import org.anotanota.model.ReceiptItemsDataAccess;
 import org.anotanota.model.ReceiptsDataAccess;
 import org.anotanota.views.ArrayAdapterHelper;
 
@@ -25,6 +28,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 public class ReceiptsViewController implements UIViewController {
   private final ReceiptsDataAccess mDataAccess;
+  private final ReceiptItemsDataAccess mItemsDataAccess;
   private final Provider<ListView> mListViewProvider;
   private final Provider<TextView> mTextViewProvider;
   private final ArrayAdapterHelper mListViewBuilder;
@@ -36,6 +40,7 @@ public class ReceiptsViewController implements UIViewController {
     Provider<TextView> textViewProvider,
     ArrayAdapterHelper arrayAdapterBuilder,
     ReceiptsDataAccess receiptsDataAccess,
+    ReceiptItemsDataAccess receiptItemsDataAccess,
     Navigation navigation,
     Executor executor) {
     mDataAccess = receiptsDataAccess;
@@ -44,6 +49,7 @@ public class ReceiptsViewController implements UIViewController {
     mExecutor = executor;
     mNavigation = navigation;
     mTextViewProvider = textViewProvider;
+    mItemsDataAccess = receiptItemsDataAccess;
   }
 
   @Override
@@ -70,6 +76,14 @@ public class ReceiptsViewController implements UIViewController {
     return listView;
   }
 
+  private static List<ReceiptItem> findItems(String content) {
+    String[] lines = content.split("\n");
+    for (String line : lines) {
+      System.out.println("LINE: " + line);
+    }
+    return Arrays.asList();
+  }
+
   private void loadReceiptView(final Receipt receipt, LinearLayout view) {
     TextView textView = ((TextView) view.findViewById(R.id.path));
     textView.setText(receipt.getPath());
@@ -86,6 +100,10 @@ public class ReceiptsViewController implements UIViewController {
             textView.setLayoutParams(new LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             textView.setText(receipt.getContent());
+            List<ReceiptItem> items = findItems(receipt.getContent());
+            for (ReceiptItem item : items) {
+              mItemsDataAccess.createItem(item);
+            }
             return textView;
           }
         });
