@@ -44,7 +44,7 @@ public class AnotanotaActivityModule {
   @Provides
   @NavigationDrawer.Titles
   List<String> titles(List<SQLiteDataAccessModule> dataAccesses) {
-    List<String> titles = new ArrayList<>();
+    List<String> titles = new ArrayList<String>();
     for (SQLiteDataAccessModule module : dataAccesses) {
       titles.add(module.getName());
     }
@@ -102,7 +102,7 @@ public class AnotanotaActivityModule {
   @Singleton
   @Anotanota.OCRThread
   ThreadPoolExecutor ocrThreadPool() {
-    BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(10);
+    BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(10);
 
     return new ThreadPoolExecutor(4, 6, 24 * 60 * 60, TimeUnit.SECONDS, queue);
   }

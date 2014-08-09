@@ -62,7 +62,7 @@ public class SQLiteReceiptsDataAccess extends SQLiteOpenHelper implements
     Cursor cursor = db.rawQuery("SELECT " + joiner.join(fields) + " from "
         + mTableName, null);
 
-    List<Receipt> receipts = new ArrayList<>();
+    List<Receipt> receipts = new ArrayList<Receipt>();
     while (cursor != null && cursor.moveToNext()) {
       Receipt receipt = new Receipt.Builder().setId(cursor.getInt(0))
           .setPath(cursor.getString(1)).setContent(cursor.getString(2)).get();

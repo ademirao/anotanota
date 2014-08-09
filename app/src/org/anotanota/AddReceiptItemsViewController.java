@@ -84,7 +84,7 @@ public class AddReceiptItemsViewController implements UIViewController {
   @Override
   public View loadView() {
     ListView filesList = this.mFilesListProvider.get();
-    final List<File> filePaths = new ArrayList<>();
+    final List<File> filePaths = new ArrayList<File>();
 
     for (String folder : kPhotosFolders) {
       String path = Environment.getExternalStorageDirectory().toString() + "/"

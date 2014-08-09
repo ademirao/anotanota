@@ -7,11 +7,11 @@ import java.util.Stack;
 import dagger.ObjectGraph;
 
 public abstract class Application extends android.app.Application {
-  private final Stack<ObjectGraph> graphStack = new Stack<>();
+  private final Stack<ObjectGraph> graphStack = new Stack<ObjectGraph>();
 
   @Override
   public final void onCreate() {
-    List<Object> modules = new ArrayList<>(getModules());
+    List<Object> modules = new ArrayList<Object>(getModules());
     modules.add(new ApplicationModule(this));
     graphStack.push(ObjectGraph.create(modules.toArray()));
   }
