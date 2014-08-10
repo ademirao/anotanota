@@ -12,10 +12,10 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/tess-two"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="libs/dagger/dagger-1.2.2.jar"/>
-	<classpathentry kind="lib" path="libs/dagger/dagger-compiler-1.2.2.jar"/>
-	<classpathentry kind="lib" path="libs/guava-17.0.jar"/>
-	<classpathentry kind="lib" path="libs/dagger/javawriter-2.5.0.jar"/>
-	<classpathentry kind="lib" path="libs/dagger/javax.inject-1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/dagger/dagger-1.2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/dagger/dagger-compiler-1.2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/guava-17.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/dagger/javawriter-2.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/dagger/javax.inject-1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
