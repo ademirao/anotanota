@@ -1,5 +1,6 @@
 package org.anotanota;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,10 +26,15 @@ import org.anotanota.sqlite.SQLiteModule;
 import org.anotanota.sqlite.SQLiteModule.SQLiteDataAccessModule;
 
 import android.content.Context;
+import android.os.Environment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.common.base.Joiner;
+import com.googlecode.tesseract.android.TessBaseAPI;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -121,5 +127,45 @@ public class AnotanotaActivityModule {
   @Provides
   TextView textView(Activity activity) {
     return new TextView(activity);
+  }
+
+  private static final String kTesseractInstalationDirPath = Environment
+      .getExternalStorageDirectory().toString() + "/anotanota/tesseract";
+
+  private static final String kTesseractConfigPath = Joiner.on(
+      File.separatorChar).join(kTesseractInstalationDirPath, "config");
+
+  @Provides
+  @Anotanota.TesseractInstallPath
+  String getInstallPath() {
+    return kTesseractInstalationDirPath;
+  }
+
+  @Provides
+  @Anotanota.TesseractAssetsPath
+  String getAssetsPath() {
+    return "tesseract";
+  }
+
+  @Provides
+  @Anotanota.TesseractConfig
+  String getTesseractConfig() {
+    return kTesseractConfigPath;
+  }
+
+  @Provides
+  @Anotanota.SelectedPaths
+  File[] getSelectedPaths(@Anotanota.TesseractInstallPath String installPath) {
+    return new File[] { new File(Joiner.on(File.separator).join(installPath,
+        "examples")), };
+  }
+
+  @Provides
+  TessBaseAPI baseApi(@Anotanota.TesseractConfig String config,
+                      @Anotanota.TesseractInstallPath String tesseractDir) {
+    TessBaseAPI baseApi = new TessBaseAPI();
+    baseApi.init(tesseractDir, "por");
+    baseApi.ReadConfigFile(config);
+    return baseApi;
   }
 }

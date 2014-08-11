@@ -19,9 +19,11 @@ public class MainViewController implements UIViewController {
   private final Navigation mNavigation;
   private final NavigationDrawerViewController mNavigationDrawer;
   private ActionBarDrawerToggle mDrawerToggle;
+  private final TesseractInstaller mInstaller;
 
   @Inject
   public MainViewController(LayoutInflater inflater,
+    TesseractInstaller installer,
     ActionBar actionBar,
     Activity context,
     Navigation navigation,
@@ -31,10 +33,12 @@ public class MainViewController implements UIViewController {
     mContext = context;
     mNavigation = navigation;
     mNavigationDrawer = navDrawer;
+    mInstaller = installer;
   }
 
   @Override
   public View loadView() {
+    mInstaller.install();
     mNavigationDrawer.openItem(0);
     mActionBar.setDisplayHomeAsUpEnabled(true);
     mActionBar.setHomeButtonEnabled(true);
