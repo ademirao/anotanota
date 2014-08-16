@@ -2,19 +2,16 @@
 
 {
 (
-unset TESSDATA_PREFIX
 readonly LANGNAME=nota
 readonly FONTNAME=nota
 
-for a in $LANGNAME.$FONTNAME.exp*.tif ;
+for a in $LANGNAME.$FONTNAME.exp*.tiff ;
 do
 
-  echo $a;
 	BASENAME=`basename $a .tiff`;
 	tesseract $a $BASENAME box.train
 
 done
-exit 1
 
 unicharset_extractor $LANGNAME.$FONTNAME.exp*.box
 echo $FONTNAME 0 0 0 0 0 > font_properties
