@@ -2,7 +2,6 @@
 
 {
 (
-unset TESSDATA_PREFIX;
 readonly LANGNAME=nota
 readonly FONTNAME=nota
 
