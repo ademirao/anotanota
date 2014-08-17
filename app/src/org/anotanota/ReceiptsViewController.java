@@ -1,26 +1,25 @@
 package org.anotanota;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import org.anotanota.framework.Navigation;
 import org.anotanota.framework.UIViewController;
 import org.anotanota.model.Receipt;
-import org.anotanota.model.ReceiptItem;
 import org.anotanota.model.ReceiptItemsDataAccess;
 import org.anotanota.model.ReceiptsDataAccess;
 import org.anotanota.views.ArrayAdapterHelper;
 
-import android.graphics.Color;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TableLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.google.common.base.Function;
@@ -29,35 +28,34 @@ import com.google.common.util.concurrent.ListenableFuture;
 public class ReceiptsViewController implements UIViewController {
   private final ReceiptsDataAccess mDataAccess;
   private final ReceiptItemsDataAccess mItemsDataAccess;
-  private final Provider<ListView> mListViewProvider;
-  private final Provider<TextView> mTextViewProvider;
   private final ArrayAdapterHelper mListViewBuilder;
   private final Executor mExecutor;
   private final Navigation mNavigation;
+  private final LayoutInflater mLayoutInflater;
 
   @Inject
-  public ReceiptsViewController(Provider<ListView> listViewProvider,
-    Provider<TextView> textViewProvider,
+  public ReceiptsViewController(LayoutInflater layoutInflater,
     ArrayAdapterHelper arrayAdapterBuilder,
     ReceiptsDataAccess receiptsDataAccess,
     ReceiptItemsDataAccess receiptItemsDataAccess,
     Navigation navigation,
     Executor executor) {
     mDataAccess = receiptsDataAccess;
-    mListViewProvider = listViewProvider;
     mListViewBuilder = arrayAdapterBuilder;
     mExecutor = executor;
     mNavigation = navigation;
-    mTextViewProvider = textViewProvider;
     mItemsDataAccess = receiptItemsDataAccess;
+    mLayoutInflater = layoutInflater;
   }
 
   @Override
   public View loadView() {
-    final ListenableFuture<List<Receipt>> items = mDataAccess.listReceipts();
-    final ListView listView = mListViewProvider.get();
+    final SwipeRefreshLayout receiptsList = (SwipeRefreshLayout) mLayoutInflater
+        .inflate(R.layout.swipe_to_refresh_list, null);
+
+    final ListView listView = (ListView) receiptsList.findViewById(R.id.list);
     final ArrayAdapterHelper.Builder<Receipt, LinearLayout> builder = mListViewBuilder
-        .<Receipt, LinearLayout> newBuilder().setItemLayout(R.layout.receipts)
+        .<Receipt, LinearLayout> newBuilder().setItemLayout(R.layout.receipt)
         .setLoadItemFunction(new Function<Pair<LinearLayout, Receipt>, Void>() {
           @Override
           public Void apply(Pair<LinearLayout, Receipt> pair) {
@@ -65,23 +63,33 @@ public class ReceiptsViewController implements UIViewController {
             return null;
           }
         });
-    items.addListener(new Runnable() {
 
+    final Function<Void, Void> loadData = new Function<Void, Void>() {
       @Override
-      public void run() {
-        List<Receipt> itemsList = FuturesUtil.get(items);
-        listView.setAdapter(builder.setObjects(itemsList).get());
+      public Void apply(Void arg0) {
+        final ListenableFuture<List<Receipt>> items = mDataAccess
+            .listReceipts();
+        items.addListener(new Runnable() {
+          @Override
+          public void run() {
+            List<Receipt> itemsList = FuturesUtil.get(items);
+            listView.setAdapter(builder.setObjects(itemsList).get());
+            receiptsList.setRefreshing(false);
+          }
+        }, mExecutor);
+        return null;
       }
-    }, mExecutor);
-    return listView;
-  }
+    };
 
-  private static List<ReceiptItem> findItems(String content) {
-    String[] lines = content.split("\n");
-    for (String line : lines) {
-      System.out.println("LINE: " + line);
-    }
-    return Arrays.asList();
+    receiptsList.setOnRefreshListener(new OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        loadData.apply(null);
+      }
+    });
+    receiptsList.setRefreshing(true);
+    loadData.apply(null);
+    return receiptsList;
   }
 
   private void loadReceiptView(final Receipt receipt, LinearLayout view) {
@@ -92,19 +100,13 @@ public class ReceiptsViewController implements UIViewController {
       @Override
       public void onClick(View v) {
         mNavigation.navigateTo(new UIViewController() {
-
           @Override
           public View loadView() {
-            TextView textView = mTextViewProvider.get();
-            textView.setBackgroundColor(Color.WHITE);
-            textView.setLayoutParams(new LayoutParams(
-                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            View view = mLayoutInflater.inflate(R.layout.view_receipt, null);
+            EditText textView = (EditText) view
+                .findViewById(R.id.receipt_content);
             textView.setText(receipt.getContent());
-            List<ReceiptItem> items = findItems(receipt.getContent());
-            for (ReceiptItem item : items) {
-              mItemsDataAccess.createItem(item);
-            }
-            return textView;
+            return view;
           }
         });
       }

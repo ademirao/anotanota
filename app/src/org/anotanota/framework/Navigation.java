@@ -46,7 +46,7 @@ public class Navigation {
     NavigationFragment fragment = new NavigationFragment(viewController);
     mFragmentManager.beginTransaction()
         .addToBackStack(Long.toHexString(viewController.hashCode()))
-        .add(R.id.content, fragment).commit();
+        .replace(R.id.content, fragment).commit();
   }
 
   public static Fragment fragmentFor(UIViewController controller) {

@@ -23,11 +23,6 @@ public interface Anotanota {
 
   }
 
-  @Qualifier
-  public @interface OCRThread {
-
-  }
-
   public @interface Views {
 
     @Qualifier

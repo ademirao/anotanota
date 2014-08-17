@@ -16,5 +16,4 @@ public class AnotanotaModule {
     return new Object[] { new AnotanotaActivityModule(), new SQLiteModule(),
         new NavigationDrawerModule() };
   }
-
 }

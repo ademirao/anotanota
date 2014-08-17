@@ -14,4 +14,9 @@ public interface App {
   @Qualifier
   public @interface MainViewController {
   }
+
+  @Qualifier
+  public @interface ApplicationScope {
+
+  }
 }

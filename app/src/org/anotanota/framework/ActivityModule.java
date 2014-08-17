@@ -1,5 +1,6 @@
 package org.anotanota.framework;
 
+import org.anotanota.framework.Scope.ScopeModule;
 import org.anotanota.framework.drawer.NavigationDrawerModule;
 
 import android.content.Context;
@@ -16,7 +17,7 @@ import dagger.Provides;
  * 
  * @author ademirao
  */
-@Module(includes = { NavigationDrawerModule.class }, injects = Activity.class, library = true, addsTo = ApplicationModule.class, complete = false)
+@Module(includes = { NavigationDrawerModule.class, ScopeModule.class }, injects = Activity.class, library = true, addsTo = ApplicationModule.class, complete = false)
 public class ActivityModule {
 
   private final Activity mActivity;

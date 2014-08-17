@@ -15,13 +15,14 @@ import javax.inject.Singleton;
 import org.anotanota.framework.Activity;
 import org.anotanota.framework.ActivityModule;
 import org.anotanota.framework.App;
-import org.anotanota.framework.Application;
+import org.anotanota.framework.Scope;
 import org.anotanota.framework.UIViewController;
 import org.anotanota.framework.drawer.NavigationDrawer;
 import org.anotanota.framework.drawer.NavigationDrawerModule;
 import org.anotanota.framework.drawer.NavigationDrawerViewController;
 import org.anotanota.framework.pager.Pager;
 import org.anotanota.framework.pager.PagerAdapter;
+import org.anotanota.framework.pipeline.Pipeline;
 import org.anotanota.sqlite.SQLiteModule;
 import org.anotanota.sqlite.SQLiteModule.SQLiteDataAccessModule;
 
@@ -71,20 +72,19 @@ public class AnotanotaActivityModule {
 
   @Provides
   @NavigationDrawer.ViewControler
-  public UIViewController drawerVC(Application app,
+  public UIViewController drawerVC(Scope scope,
                                    Context context,
                                    NavigationDrawerViewController drawer,
                                    List<SQLiteDataAccessModule> dataAccess) {
-    try {
-      return app.openScope(dataAccess.get(drawer.getCurrentPosition()),
-          new DataAccessScopedEndpoints()).get(DataSourceViewController.class);
-    } finally {
-      app.closeScope();
-    }
+    return scope
+        .newChild(dataAccess.get(drawer.getCurrentPosition()),
+            new DataAccessScopedEndpoints()).getGraph()
+        .get(DataSourceViewController.class);
   }
 
   @Module(injects = { DataSourceViewController.class }, library = true, complete = false, addsTo = AnotanotaActivityModule.class)
   public static class DataAccessScopedEndpoints {
+
     @Provides
     @Pager.Titles
     List<String> tabsTitles() {
@@ -94,7 +94,7 @@ public class AnotanotaActivityModule {
     @Provides
     @Pager.Tabs
     UIViewController tabsViewControllers(PagerAdapter adapter,
-                                         Provider<AddReceiptItemsViewController> addReceipts,
+                                         Provider<AddReceiptViewController> addReceipts,
                                          Provider<ReceiptsItemsViewController> receiptsItems,
                                          Provider<ReceiptsViewController> receipts,
                                          Provider<AggregatedProductsViewController> aggregatedProducts) {
@@ -106,7 +106,7 @@ public class AnotanotaActivityModule {
 
   @Provides
   @Singleton
-  @Anotanota.OCRThread
+  @Pipeline.Executor
   ThreadPoolExecutor ocrThreadPool() {
     BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(10);
 
@@ -164,7 +164,7 @@ public class AnotanotaActivityModule {
   TessBaseAPI baseApi(@Anotanota.TesseractConfig String config,
                       @Anotanota.TesseractInstallPath String tesseractDir) {
     TessBaseAPI baseApi = new TessBaseAPI();
-    baseApi.init(tesseractDir, "por");
+    baseApi.init(tesseractDir, "nota");
     baseApi.ReadConfigFile(config);
     return baseApi;
   }

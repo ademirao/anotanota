@@ -70,7 +70,6 @@ public class Activity extends ActionBarActivity {
   @Override
   protected void onStop() {
     super.onStop();
-    mApplication.closeScope();
   }
 
   @Override
@@ -78,14 +77,14 @@ public class Activity extends ActionBarActivity {
     super.onStart();
     mApplication = ((Application) getApplication());
     setContentView(R.layout.activity_main);
-    ActivityModules modules = mApplication.getGraph()
-        .get(ActivityModules.class);
+    Scope appScope = mApplication.getAppScope();
+    ActivityModules modules = appScope.getGraph().get(ActivityModules.class);
     Object modulesArray[] = new Object[modules.mActivityModules.length + 2];
     modulesArray[0] = new ActivityModule(this);
     modulesArray[1] = new NavigationDrawerModule();
     System.arraycopy(modules.mActivityModules, 0, modulesArray, 2,
         modules.mActivityModules.length);
-    mApplication.openScope(modulesArray).inject(this);
+    appScope.newChild(modulesArray).getGraph().inject(this);
     mNavigation.navigateTo(mMainViewController);
   }
 }

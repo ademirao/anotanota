@@ -46,4 +46,10 @@ public class ApplicationModule {
       }
     };
   }
+
+  @Provides
+  @App.ApplicationScope
+  Scope scope(Application app) {
+    return app.getAppScope();
+  }
 }
