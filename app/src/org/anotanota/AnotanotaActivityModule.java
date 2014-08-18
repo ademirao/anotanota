@@ -34,13 +34,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.common.base.Joiner;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module(includes = { SQLiteModule.class, ActivityModule.class,
-    NavigationDrawerModule.class }, library = true, complete = true, addsTo = AnotanotaModule.class)
+    NavigationDrawerModule.class }, library = true, addsTo = AnotanotaModule.class, overrides = true)
 public class AnotanotaActivityModule {
   @Provides
   @App.MainViewController
@@ -82,7 +84,7 @@ public class AnotanotaActivityModule {
         .get(DataSourceViewController.class);
   }
 
-  @Module(injects = { DataSourceViewController.class }, library = true, complete = false, addsTo = AnotanotaActivityModule.class)
+  @Module(injects = { DataSourceViewController.class }, includes = { SQLiteDataAccessModule.class }, library = true, addsTo = AnotanotaActivityModule.class)
   public static class DataAccessScopedEndpoints {
 
     @Provides
@@ -98,19 +100,26 @@ public class AnotanotaActivityModule {
                                          Provider<ReceiptsItemsViewController> receiptsItems,
                                          Provider<ReceiptsViewController> receipts,
                                          Provider<AggregatedProductsViewController> aggregatedProducts) {
-      return Arrays
-          .asList(aggregatedProducts, receiptsItems, receipts, addReceipts)
-          .get(adapter.getCurrentTab()).get();
+      List<Provider<? extends UIViewController>> asList = Arrays.asList(
+          aggregatedProducts, receiptsItems, receipts, addReceipts);
+      return asList.get(adapter.getCurrentTab()).get();
     }
   }
 
   @Provides
   @Singleton
   @Pipeline.Executor
-  ThreadPoolExecutor ocrThreadPool() {
+  ThreadPoolExecutor getThreadPool() {
     BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(10);
 
     return new ThreadPoolExecutor(4, 6, 24 * 60 * 60, TimeUnit.SECONDS, queue);
+  }
+
+  @Provides
+  @Singleton
+  @Pipeline.Executor
+  ListeningExecutorService getService(ThreadPoolExecutor threadPool) {
+    return MoreExecutors.listeningDecorator(threadPool);
   }
 
   @Provides

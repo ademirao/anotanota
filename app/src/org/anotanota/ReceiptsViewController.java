@@ -1,13 +1,17 @@
 package org.anotanota;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.anotanota.framework.Navigation;
 import org.anotanota.framework.UIViewController;
+import org.anotanota.framework.pipeline.Pipeline;
 import org.anotanota.model.Receipt;
+import org.anotanota.model.ReceiptItem;
 import org.anotanota.model.ReceiptItemsDataAccess;
 import org.anotanota.model.ReceiptsDataAccess;
 import org.anotanota.views.ArrayAdapterHelper;
@@ -32,6 +36,8 @@ public class ReceiptsViewController implements UIViewController {
   private final Executor mExecutor;
   private final Navigation mNavigation;
   private final LayoutInflater mLayoutInflater;
+  private final Pipeline mPipeline;
+  private final Object[] mProducers;
 
   @Inject
   public ReceiptsViewController(LayoutInflater layoutInflater,
@@ -39,6 +45,8 @@ public class ReceiptsViewController implements UIViewController {
     ReceiptsDataAccess receiptsDataAccess,
     ReceiptItemsDataAccess receiptItemsDataAccess,
     Navigation navigation,
+    Pipeline pipeline,
+    @Named("FullPipelineProducers") Object[] producers,
     Executor executor) {
     mDataAccess = receiptsDataAccess;
     mListViewBuilder = arrayAdapterBuilder;
@@ -46,6 +54,8 @@ public class ReceiptsViewController implements UIViewController {
     mNavigation = navigation;
     mItemsDataAccess = receiptItemsDataAccess;
     mLayoutInflater = layoutInflater;
+    mProducers = producers;
+    mPipeline = pipeline;
   }
 
   @Override
@@ -96,7 +106,6 @@ public class ReceiptsViewController implements UIViewController {
     TextView textView = ((TextView) view.findViewById(R.id.path));
     textView.setText(receipt.getPath());
     textView.setOnClickListener(new View.OnClickListener() {
-
       @Override
       public void onClick(View v) {
         mNavigation.navigateTo(new UIViewController() {
@@ -106,6 +115,9 @@ public class ReceiptsViewController implements UIViewController {
             EditText textView = (EditText) view
                 .findViewById(R.id.receipt_content);
             textView.setText(receipt.getContent());
+            System.out.println("BLA");
+            mPipeline.produce(ReceiptItem.class, Arrays.asList(mProducers));
+            System.out.println("BLE");
             return view;
           }
         });

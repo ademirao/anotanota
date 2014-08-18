@@ -14,29 +14,21 @@ import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(library = true, complete = false, addsTo = ActivityModule.class)
+@Module(library = true, addsTo = ActivityModule.class, complete = false)
 public class SQLiteModule {
   @Provides
   List<SQLiteDataAccessModule> dataSources(Context context) {
     return Arrays.<SQLiteDataAccessModule> asList(new SQLiteDataAccessModule(
-        new SQLiteDataAccessConfig("ademirao"), context),
-        new SQLiteDataAccessModule(new SQLiteDataAccessConfig("danielavvaz"),
-            context));
+        new SQLiteDataAccessConfig("ademirao")), new SQLiteDataAccessModule(
+        new SQLiteDataAccessConfig("danielavvaz")));
   }
 
   @Module(library = true, complete = false, addsTo = SQLiteModule.class)
   public static class SQLiteDataAccessModule {
     private final SQLiteDataAccessConfig mConfig;
-    private final Context mContext;
 
-    public SQLiteDataAccessModule(SQLiteDataAccessConfig config, Context context) {
-      mContext = context;
+    public SQLiteDataAccessModule(SQLiteDataAccessConfig config) {
       mConfig = config;
-    }
-
-    @Provides
-    Context context() {
-      return mContext;
     }
 
     @Provides

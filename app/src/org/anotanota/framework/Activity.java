@@ -1,10 +1,12 @@
 package org.anotanota.framework;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import javax.inject.Inject;
 
 import org.anotanota.R;
 import org.anotanota.framework.drawer.NavigationDrawer;
-import org.anotanota.framework.drawer.NavigationDrawerModule;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -20,46 +22,48 @@ import android.view.MenuItem;
 public class Activity extends ActionBarActivity {
   Application mApplication;
 
-  public static class ActivityModules {
+  @Inject
+  @App.ActivityModules
+  Object[] mActivityModules;
+
+  ActivityState mState;
+
+  public static class ActivityState {
     @Inject
-    @App.ActivityModules
-    Object[] mActivityModules;
+    @App.MainViewController
+    UIViewController mMainViewController;
+
+    @Inject
+    @NavigationDrawer.Toggle
+    ActionBarDrawerToggle mDrawerToggle;
+
+    @Inject
+    Navigation mNavigation;
   }
-
-  @Inject
-  @App.MainViewController
-  UIViewController mMainViewController;
-
-  @Inject
-  @NavigationDrawer.Toggle
-  ActionBarDrawerToggle mDrawerToggle;
-
-  @Inject
-  Navigation mNavigation;
 
   @Override
   public void onBackPressed() {
-    mNavigation.back();
+    mState.mNavigation.back();
   }
 
   @Override
   protected void onPostCreate(Bundle savedInstanceState) {
     super.onPostCreate(savedInstanceState);
     // Sync the toggle state after onRestoreInstanceState has occurred.
-    mDrawerToggle.syncState();
+    mState.mDrawerToggle.syncState();
   }
 
   @Override
   public void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
-    mDrawerToggle.onConfigurationChanged(newConfig);
+    mState.mDrawerToggle.onConfigurationChanged(newConfig);
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     // Pass the event to ActionBarDrawerToggle, if it returns
     // true, then it has handled the app icon touch event
-    if (mDrawerToggle.onOptionsItemSelected(item)) {
+    if (mState.mDrawerToggle.onOptionsItemSelected(item)) {
       return true;
     }
     // Handle your other action bar items...
@@ -78,13 +82,12 @@ public class Activity extends ActionBarActivity {
     mApplication = ((Application) getApplication());
     setContentView(R.layout.activity_main);
     Scope appScope = mApplication.getAppScope();
-    ActivityModules modules = appScope.getGraph().get(ActivityModules.class);
-    Object modulesArray[] = new Object[modules.mActivityModules.length + 2];
-    modulesArray[0] = new ActivityModule(this);
-    modulesArray[1] = new NavigationDrawerModule();
-    System.arraycopy(modules.mActivityModules, 0, modulesArray, 2,
-        modules.mActivityModules.length);
-    appScope.newChild(modulesArray).getGraph().inject(this);
-    mNavigation.navigateTo(mMainViewController);
+    appScope.getGraph().inject(this);
+    ArrayList<Object> modules = new ArrayList<Object>(
+        Arrays.asList(mActivityModules));
+    modules.add(new ActivityModule(this));
+    mState = appScope.newChild(modules.toArray()).getGraph()
+        .get(ActivityState.class);
+    mState.mNavigation.navigateTo(mState.mMainViewController);
   }
 }

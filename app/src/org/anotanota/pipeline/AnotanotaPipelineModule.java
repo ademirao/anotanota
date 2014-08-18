@@ -1,17 +1,17 @@
 package org.anotanota.pipeline;
 
-import org.anotanota.framework.pipeline.Pipeline;
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module(library = true)
 public class AnotanotaPipelineModule {
-
   @Provides
-  @Pipeline.Producers
+  @Named("FullPipelineProducers")
   Object[] getProducers() {
     return new Object[] { new ReceiptProducer(), new ReceiptItemsProducer(),
         new ProductsProducer() };
   }
+
 }

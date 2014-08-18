@@ -1,77 +1,46 @@
 package org.anotanota.framework.pipeline;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-import org.anotanota.framework.ActivityModule;
 import org.anotanota.framework.Scope;
-import org.anotanota.pipeline.Result;
 
-import dagger.Module;
-import dagger.Provides;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
 
 public class Pipeline {
   private final Scope mScope;
-  private final ThreadPoolExecutor mThreadPool;
-  private final Object[] mProducers;
-
-  public @interface InputFile {
-
-  }
-
-  public @interface Producers {
-
-  }
+  private final ListeningExecutorService mService;
 
   public @interface Executor {
-
   }
 
   @Inject
-  public Pipeline(@Executor ThreadPoolExecutor threadPool,
-    Scope scope,
-    @Producers Object[] producers) {
-    mThreadPool = threadPool;
+  public Pipeline(@Executor ListeningExecutorService service, Scope scope) {
+    mService = service;
     mScope = scope;
-    mProducers = producers;
   }
 
-  @Module(library = true, addsTo = ActivityModule.class, injects = PipelineResult.class, complete = false)
-  public class PipelineModule {
-    private final File mReceipt;
-
-    private PipelineModule(File file) {
-      mReceipt = file;
-    }
-
-    @Provides
-    @InputFile
-    File getReceipt() {
-      return mReceipt;
-    }
-  }
-
-  static class PipelineResult {
-    @Product
-    @Inject
-    Result result;
-  }
-
-  public void startPipelineFor(final File file) {
-    mThreadPool.execute(new Runnable() {
-
+  public <T> ListenableFuture<T> produce(final Class<T> clazz,
+                                         final List<Object> modules) {
+    return mService.submit(new Callable<T>() {
       @Override
-      public void run() {
-        List<Object> producers = new ArrayList<Object>(Arrays
-            .asList(mProducers));
-        producers.add(new PipelineModule(file));
-        mScope.newChild(producers.toArray()).getGraph()
-            .inject(new PipelineResult());
+      public T call() throws Exception {
+        return mScope.newChild(modules.toArray()).getGraph().get(clazz);
+      }
+    });
+  }
+
+  public ListenableFuture<Void> produceInto(final Class<Void> clazz,
+                                            final Object into,
+                                            final List<Object> modules) {
+    return mService.submit(new Callable<Void>() {
+      @Override
+      public Void call() throws Exception {
+        mScope.newChild(modules.toArray()).getGraph().inject(into);
+        return null;
       }
     });
   }

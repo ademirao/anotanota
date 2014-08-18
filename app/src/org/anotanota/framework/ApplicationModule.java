@@ -2,14 +2,25 @@ package org.anotanota.framework;
 
 import java.util.concurrent.Executor;
 
+import org.anotanota.framework.App.ActivityModules;
+
 import android.os.Handler;
 import android.os.Looper;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(library = true, complete = false, injects = Activity.ActivityModules.class)
+@Module(library = true, injects = Activity.class, includes = { ApplicationModule.Dependencies.class })
 public class ApplicationModule {
   private final Application mApplication;
+
+  @Module(library = true)
+  public static class Dependencies {
+    @Provides
+    @ActivityModules
+    Object[] getModules() {
+      throw Application.getMissingBind(ActivityModules.class, Object.class);
+    }
+  }
 
   public ApplicationModule(Application app) {
     mApplication = app;

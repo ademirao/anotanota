@@ -1,5 +1,6 @@
 package org.anotanota.framework;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,4 +20,10 @@ public abstract class Application extends android.app.Application {
   }
 
   public abstract List<Object> getModules();
+
+  public static RuntimeException getMissingBind(Class<? extends Annotation> clazz,
+                                                Class<?> type) {
+    return new RuntimeException("Missing binding override " + clazz
+        + " for type " + type);
+  }
 }

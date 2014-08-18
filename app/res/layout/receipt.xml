@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
     <TextView
-        android:id="@+id/receipt_id"
+        android:id="@+id/path"
         android:padding="14dp"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"

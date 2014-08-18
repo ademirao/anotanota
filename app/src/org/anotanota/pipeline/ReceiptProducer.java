@@ -3,7 +3,6 @@ package org.anotanota.pipeline;
 import java.io.File;
 
 import org.anotanota.AnotanotaActivityModule.DataAccessScopedEndpoints;
-import org.anotanota.framework.pipeline.Pipeline;
 import org.anotanota.framework.pipeline.Product;
 import org.anotanota.model.Receipt;
 import org.anotanota.model.ReceiptsDataAccess;
@@ -17,12 +16,16 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(library = true, includes = { Pipeline.PipelineModule.class }, addsTo = DataAccessScopedEndpoints.class)
+@Module(library = true, addsTo = DataAccessScopedEndpoints.class, injects = { Receipt.class }, complete = false)
 public class ReceiptProducer {
+
+  public @interface InputFile {
+  }
+
   @SuppressLint("NewApi")
   @Provides
   @Product
-  Receipt getResult(@Pipeline.InputFile File file,
+  Receipt getResult(@InputFile File file,
                     ReceiptsDataAccess receiptsDA,
                     TessBaseAPI tesseract) {
     BitmapFactory.Options options = new BitmapFactory.Options();

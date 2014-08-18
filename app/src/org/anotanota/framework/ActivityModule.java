@@ -1,10 +1,12 @@
 package org.anotanota.framework;
 
+import org.anotanota.framework.App.MainViewController;
 import org.anotanota.framework.Scope.ScopeModule;
-import org.anotanota.framework.drawer.NavigationDrawerModule;
+import org.anotanota.framework.drawer.NavigationDrawer;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -17,8 +19,26 @@ import dagger.Provides;
  * 
  * @author ademirao
  */
-@Module(includes = { NavigationDrawerModule.class, ScopeModule.class }, injects = Activity.class, library = true, addsTo = ApplicationModule.class, complete = false)
+@Module(library = true, injects = { Activity.ActivityState.class }, includes = {
+    ScopeModule.class, ActivityModule.Dependencies.class }, overrides = true, addsTo = ApplicationModule.class)
 public class ActivityModule {
+
+  @Module(library = true)
+  public static class Dependencies {
+    @Provides
+    @MainViewController
+    UIViewController getMainViewController() {
+      throw Application.getMissingBind(MainViewController.class,
+          UIViewController.class);
+    }
+
+    @Provides
+    @NavigationDrawer.Toggle
+    ActionBarDrawerToggle getToggle() {
+      throw Application.getMissingBind(NavigationDrawer.Toggle.class,
+          ActionBarDrawerToggle.class);
+    }
+  }
 
   private final Activity mActivity;
 
@@ -37,7 +57,7 @@ public class ActivityModule {
   }
 
   @Provides
-  Context context(ActionBarActivity activity) {
+  Context getContext(ActionBarActivity activity) {
     return activity;
   }
 
