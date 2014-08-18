@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Provider;
 
 import org.anotanota.framework.UIViewController;
 import org.anotanota.framework.pipeline.Pipeline;
 import org.anotanota.model.Receipt;
+import org.anotanota.pipeline.AnotanotaPipeline.FullPipeline;
 import org.anotanota.pipeline.InputFileProducer;
 
 import android.content.Context;
@@ -41,7 +41,7 @@ public class AddReceiptViewController implements UIViewController {
     Provider<ListView> listView,
     LayoutInflater layoutInflater,
     @Anotanota.SelectedPaths File[] selectedPaths,
-    @Named("FullPipelineProducers") Object[] producers,
+    @FullPipeline Object[] producers,
     Pipeline pipeline) {
     mSelectedPaths = selectedPaths;
     mActionBar = actionBar;

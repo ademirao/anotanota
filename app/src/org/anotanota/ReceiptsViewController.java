@@ -1,11 +1,9 @@
 package org.anotanota;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.anotanota.framework.Navigation;
 import org.anotanota.framework.UIViewController;
@@ -14,6 +12,8 @@ import org.anotanota.model.Receipt;
 import org.anotanota.model.ReceiptItem;
 import org.anotanota.model.ReceiptItemsDataAccess;
 import org.anotanota.model.ReceiptsDataAccess;
+import org.anotanota.pipeline.AnotanotaPipeline.ItemsFromString;
+import org.anotanota.pipeline.InputReceiptProducer;
 import org.anotanota.views.ArrayAdapterHelper;
 
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -27,6 +27,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public class ReceiptsViewController implements UIViewController {
@@ -46,7 +47,7 @@ public class ReceiptsViewController implements UIViewController {
     ReceiptItemsDataAccess receiptItemsDataAccess,
     Navigation navigation,
     Pipeline pipeline,
-    @Named("FullPipelineProducers") Object[] producers,
+    @ItemsFromString Object[] producers,
     Executor executor) {
     mDataAccess = receiptsDataAccess;
     mListViewBuilder = arrayAdapterBuilder;
@@ -115,9 +116,8 @@ public class ReceiptsViewController implements UIViewController {
             EditText textView = (EditText) view
                 .findViewById(R.id.receipt_content);
             textView.setText(receipt.getContent());
-            System.out.println("BLA");
-            mPipeline.produce(ReceiptItem.class, Arrays.asList(mProducers));
-            System.out.println("BLE");
+            mPipeline.produce(ReceiptItem.class,
+                Lists.asList(new InputReceiptProducer(receipt), mProducers));
             return view;
           }
         });

@@ -23,7 +23,9 @@ public class Scope {
     ScopeModule module = new ScopeModule();
     List<Object> modulesList = new ArrayList<Object>(Arrays.asList(modules));
     modulesList.add(module);
+    System.out.println("Creating graph");
     ObjectGraph graph = mObjectGraph.plus(modulesList.toArray());
+    System.out.println("Graph created!");
     Scope s = new Scope(graph);
     module.setScope(s);
     return s;
