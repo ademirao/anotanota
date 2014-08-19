@@ -5,6 +5,7 @@ import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
+import org.anotanota.framework.App.MainThread;
 import org.anotanota.framework.Navigation;
 import org.anotanota.framework.UIViewController;
 import org.anotanota.framework.pipeline.Pipeline;
@@ -48,7 +49,7 @@ public class ReceiptsViewController implements UIViewController {
     Navigation navigation,
     Pipeline pipeline,
     @ItemsFromString Object[] producers,
-    Executor executor) {
+    @MainThread Executor executor) {
     mDataAccess = receiptsDataAccess;
     mListViewBuilder = arrayAdapterBuilder;
     mExecutor = executor;
@@ -75,9 +76,9 @@ public class ReceiptsViewController implements UIViewController {
           }
         });
 
-    final Function<Void, Void> loadData = new Function<Void, Void>() {
+    final Runnable loadData = new Runnable() {
       @Override
-      public Void apply(Void arg0) {
+      public void run() {
         final ListenableFuture<List<Receipt>> items = mDataAccess
             .listReceipts();
         items.addListener(new Runnable() {
@@ -88,18 +89,17 @@ public class ReceiptsViewController implements UIViewController {
             receiptsList.setRefreshing(false);
           }
         }, mExecutor);
-        return null;
       }
     };
 
     receiptsList.setOnRefreshListener(new OnRefreshListener() {
       @Override
       public void onRefresh() {
-        loadData.apply(null);
+        receiptsList.setRefreshing(true);
+        loadData.run();
       }
     });
-    receiptsList.setRefreshing(true);
-    loadData.apply(null);
+    loadData.run();
     return receiptsList;
   }
 
@@ -116,8 +116,21 @@ public class ReceiptsViewController implements UIViewController {
             EditText textView = (EditText) view
                 .findViewById(R.id.receipt_content);
             textView.setText(receipt.getContent());
-            mPipeline.produce(ReceiptItem.class,
+            final ListenableFuture<ReceiptItem> future = mPipeline.produce(
+                ReceiptItem.class,
                 Lists.asList(new InputReceiptProducer(receipt), mProducers));
+            future.addListener(new Runnable() {
+
+              @Override
+              public void run() {
+                try {
+                  future.get();
+                } catch (Exception e) {
+                  e.printStackTrace();
+                }
+              }
+
+            }, mExecutor);
             return view;
           }
         });

@@ -29,6 +29,7 @@ public class SQLiteReceiptItemsDataAccess extends SQLiteOpenHelper implements
   private static final String ID_FIELD = "id";
   private static final String NAME_FIELD = "name";
   private static final String PRICE_FIELD = "price";
+  private static final String CONTENT_FIELD = "content";
 
   private static final String RECEIPT_ID_FIELD = "receipt_id";
 
@@ -48,7 +49,7 @@ public class SQLiteReceiptItemsDataAccess extends SQLiteOpenHelper implements
   public void onCreate(SQLiteDatabase db) {
     String CREATE_ITEMS_TABLE = "CREATE TABLE " + mTableName + "(" + ID_FIELD
         + " INTEGER PRIMARY KEY," + RECEIPT_ID_FIELD + " INTEGER," + NAME_FIELD
-        + " TEXT," + PRICE_FIELD + " DOUBLE" + ")";
+        + " TEXT," + CONTENT_FIELD + " TEXT," + PRICE_FIELD + " DOUBLE" + ")";
     db.execSQL(CREATE_ITEMS_TABLE);
   }
 
@@ -70,7 +71,7 @@ public class SQLiteReceiptItemsDataAccess extends SQLiteOpenHelper implements
   public ListenableFuture<List<ReceiptItem>> listItems() {
     Joiner joiner = Joiner.on(",").skipNulls();
     String[] fields = new String[] { ID_FIELD, NAME_FIELD, RECEIPT_ID_FIELD,
-        PRICE_FIELD };
+        PRICE_FIELD, CONTENT_FIELD };
     SQLiteDatabase db = getReadableDatabase();
     Cursor cursor = db.rawQuery("SELECT " + joiner.join(fields) + " from "
         + mTableName, null);
@@ -79,7 +80,7 @@ public class SQLiteReceiptItemsDataAccess extends SQLiteOpenHelper implements
     while (cursor != null && cursor.moveToNext()) {
       ReceiptItem receipt = new ReceiptItem.Builder().setId(cursor.getInt(0))
           .setName(cursor.getString(1)).setReceiptId(cursor.getInt(2))
-          .setPrice(cursor.getFloat(3)).get();
+          .setPrice(cursor.getFloat(3)).setContent(cursor.getString(4)).get();
       receipts.add(receipt);
     }
 
@@ -111,6 +112,7 @@ public class SQLiteReceiptItemsDataAccess extends SQLiteOpenHelper implements
     values.put(NAME_FIELD, item.getName());
     values.put(PRICE_FIELD, item.getPrice());
     values.put(RECEIPT_ID_FIELD, item.getReceiptId());
+    values.put(CONTENT_FIELD, item.getContent());
     db.insert(mTableName, null, values);
 
     return Futures.immediateFuture(null);

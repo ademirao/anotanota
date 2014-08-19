@@ -11,8 +11,11 @@ import org.anotanota.model.ReceiptItem;
 import org.anotanota.model.ReceiptItemsDataAccess;
 import org.anotanota.views.ArrayAdapterHelper;
 
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBar;
 import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -26,23 +29,27 @@ public class ReceiptsItemsViewController implements UIViewController {
   private final Provider<ListView> mListViewProvider;
   private final ReceiptItemsDataAccess mDataAccess;
   private final Executor mExecutor;
+  private final LayoutInflater mInflater;
 
   @Inject
   public ReceiptsItemsViewController(ActionBar actionBar,
     Provider<ListView> listViewProvider,
     ArrayAdapterHelper adapterBuilder,
     ReceiptItemsDataAccess dataAccess,
+    LayoutInflater inflater,
     Executor executor) {
     mListViewBuilder = adapterBuilder;
     mDataAccess = dataAccess;
     mExecutor = executor;
     mListViewProvider = listViewProvider;
+    mInflater = inflater;
   }
 
   @Override
   public View loadView() {
-    final ListenableFuture<List<ReceiptItem>> items = mDataAccess.listItems();
-    final ListView listView = mListViewProvider.get();
+    final SwipeRefreshLayout view = (SwipeRefreshLayout) mInflater.inflate(
+        R.layout.swipe_to_refresh_list, null);
+    final ListView listView = (ListView) view.findViewById(R.id.list);
     final ArrayAdapterHelper.Builder<ReceiptItem, LinearLayout> builder = mListViewBuilder
         .<ReceiptItem, LinearLayout> newBuilder()
         .setItemLayout(R.layout.receipt_item)
@@ -54,15 +61,37 @@ public class ReceiptsItemsViewController implements UIViewController {
                 return null;
               }
             });
-    items.addListener(new Runnable() {
-      List<ReceiptItem> itemsList = FuturesUtil.get(items);
+
+    final Runnable loadData = new Runnable() {
 
       @Override
       public void run() {
-        listView.setAdapter(builder.setObjects(itemsList).get());
+
+        view.setRefreshing(true);
+        final ListenableFuture<List<ReceiptItem>> items = mDataAccess
+            .listItems();
+        items.addListener(new Runnable() {
+          List<ReceiptItem> itemsList = FuturesUtil.get(items);
+
+          @Override
+          public void run() {
+            listView.setAdapter(builder.setObjects(itemsList).get());
+
+            view.setRefreshing(false);
+          }
+        }, mExecutor);
       }
-    }, mExecutor);
-    return listView;
+    };
+
+    view.setOnRefreshListener(new OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        loadData.run();
+      }
+    });
+
+    loadData.run();
+    return view;
   }
 
   private final void loadReceiptItemView(ReceiptItem item, LinearLayout view) {

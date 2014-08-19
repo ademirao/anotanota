@@ -5,51 +5,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import org.anotanota.framework.UIViewController;
 import org.anotanota.framework.pipeline.Pipeline;
 import org.anotanota.model.Receipt;
 import org.anotanota.pipeline.AnotanotaPipeline.FullPipeline;
 import org.anotanota.pipeline.InputFileProducer;
+import org.anotanota.views.ArrayAdapterHelper;
 
 import android.content.Context;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBar;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 public class AddReceiptViewController implements UIViewController {
   private final ActionBar mActionBar;
-  private final Provider<ListView> mFilesListProvider;
   private final Context mContext;
   private final LayoutInflater mLayoutInflater;
   private final File[] mSelectedPaths;
   private final Object[] mProducers;
   private final Pipeline mPipeline;
+  private final ArrayAdapterHelper mArrayAdapterHelper;
 
   @Inject
   public AddReceiptViewController(Context context,
     ActionBar actionBar,
-    Provider<ListView> listView,
+    ArrayAdapterHelper arrayAdapterBuilder,
     LayoutInflater layoutInflater,
     @Anotanota.SelectedPaths File[] selectedPaths,
     @FullPipeline Object[] producers,
     Pipeline pipeline) {
     mSelectedPaths = selectedPaths;
     mActionBar = actionBar;
-    mFilesListProvider = listView;
     mContext = context;
     mLayoutInflater = layoutInflater;
     mPipeline = pipeline;
     mProducers = producers;
+    mArrayAdapterHelper = arrayAdapterBuilder;
   }
 
   public void listFiles(File[] files, List<File> allFiles) {
@@ -64,26 +67,41 @@ public class AddReceiptViewController implements UIViewController {
 
   @Override
   public View loadView() {
-    ListView filesList = this.mFilesListProvider.get();
-    final List<File> files = new ArrayList<File>();
+    final ArrayAdapterHelper.Builder<File, LinearLayout> builder = mArrayAdapterHelper
+        .<File, LinearLayout> newBuilder()
+        .setItemLayout(R.layout.receipts_files)
+        .setLoadItemFunction(new Function<Pair<LinearLayout, File>, Void>() {
 
-    listFiles(mSelectedPaths, files);
-
-    filesList.setAdapter(new ArrayAdapter<File>(mContext,
-        R.layout.receipts_files, files) {
+          @Override
+          public Void apply(Pair<LinearLayout, File> arg0) {
+            loadFilePathView(arg0.second, arg0.first);
+            return null;
+          }
+        });
+    final SwipeRefreshLayout view = (SwipeRefreshLayout) mLayoutInflater
+        .inflate(R.layout.swipe_to_refresh_list, null);
+    final ListView filesList = (ListView) view.findViewById(R.id.list);
+    final Runnable loadData = new Runnable() {
       @Override
-      public View getView(int position, View convertView, ViewGroup parent) {
-        LinearLayout receiptItemView = null;
-        if (convertView == null) {
-          receiptItemView = createFilePathView(null);
-        } else {
-          receiptItemView = (LinearLayout) convertView;
-        }
-        loadFilePathView(files.get(position), receiptItemView);
-        return receiptItemView;
+      public void run() {
+        view.setRefreshing(true);
+        final List<File> files = new ArrayList<File>();
+
+        listFiles(mSelectedPaths, files);
+        filesList.setAdapter(builder.setObjects(files).get());
+        view.setRefreshing(false);
+      }
+
+    };
+    view.setOnRefreshListener(new OnRefreshListener() {
+
+      @Override
+      public void onRefresh() {
+        loadData.run();
       }
     });
-    return filesList;
+    loadData.run();
+    return view;
   }
 
   private final LinearLayout createFilePathView(ViewGroup parent) {

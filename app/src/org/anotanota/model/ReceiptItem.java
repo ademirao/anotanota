@@ -6,6 +6,7 @@ public class ReceiptItem {
   private float mQuantity;
   private float mPrice;
   private int mReceiptId;
+  private String mContent;
 
   private ReceiptItem() {
   }
@@ -27,22 +28,27 @@ public class ReceiptItem {
     }
 
     public Builder setName(String name) {
-      item.setName(name);
+      item.mName = name;
       return this;
     }
 
     public Builder setQuantity(float quantity) {
-      item.setQuantity(quantity);
+      item.mQuantity = quantity;
       return this;
     }
 
     public Builder setPrice(float price) {
-      item.setPrice(price);
+      item.mPrice = price;
       return this;
     }
 
     public Builder setReceiptId(int receiptId) {
-      item.setReceiptId(receiptId);
+      item.mReceiptId = receiptId;
+      return this;
+    }
+
+    public Builder setContent(String content) {
+      item.mContent = content;
       return this;
     }
   }
@@ -55,31 +61,19 @@ public class ReceiptItem {
     return mName;
   }
 
-  private void setName(String mName) {
-    this.mName = mName;
-  }
-
   public float getQuantity() {
     return mQuantity;
-  }
-
-  private void setQuantity(float mQuantity) {
-    this.mQuantity = mQuantity;
   }
 
   public float getPrice() {
     return mPrice;
   }
 
-  private void setPrice(float mPrice) {
-    this.mPrice = mPrice;
-  }
-
   public int getReceiptId() {
     return mReceiptId;
   }
 
-  private void setReceiptId(int mReceiptId) {
-    this.mReceiptId = mReceiptId;
+  public String getContent() {
+    return mContent;
   }
 }

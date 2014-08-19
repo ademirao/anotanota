@@ -13,7 +13,7 @@ public class SQLiteDataAccessConfig {
   }
 
   public int getDatabaseVersion() {
-    return 1;
+    return 2;
   }
 
   public String getUserName() {

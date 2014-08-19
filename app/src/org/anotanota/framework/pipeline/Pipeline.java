@@ -50,9 +50,7 @@ public class Pipeline {
     return mService.submit(new Callable<Void>() {
       @Override
       public Void call() throws Exception {
-
         mScope.newChild(modules.toArray()).getGraph().inject(into);
-
         return null;
       }
     });

@@ -13,7 +13,7 @@ import com.google.common.base.Splitter;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(library = true, includes = { ReceiptProducer.class }, injects = ReceiptItem.class, addsTo = DataAccessScopedEndpoints.class, complete = false)
+@Module(library = true, injects = ReceiptItem.class, addsTo = DataAccessScopedEndpoints.class, complete = false)
 public class ReceiptItemsProducer {
 
   @Provides
@@ -24,8 +24,9 @@ public class ReceiptItemsProducer {
     Iterable<String> lines = Splitter.on(Pattern.compile("\r?\n")).split(
         content);
     for (String line : lines) {
-      ReceiptItem item = new ReceiptItem.Builder().setName(line).get();
-      System.out.println(item.getName());
+      ReceiptItem item = new ReceiptItem.Builder().setContent(line)
+          .setReceiptId(receipt.getId()).get();
+      itemsDA.createItem(item);
     }
     return null;
   }
