@@ -2,16 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:padding="7dp" >
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
         android:orientation="vertical" >
 
         <EditText
             android:id="@+id/name"
-            android:layout_width="wrap_content"
+            android:layout_width="252dp"
             android:layout_height="wrap_content"
             android:padding="2dp"
             android:paddingBottom="4dp"
@@ -25,21 +27,23 @@
             android:orientation="horizontal" >
 
             <EditText
-                android:textColor="#999"
                 android:id="@+id/quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:padding="2dp"
+                android:gravity="end"
                 android:text="10.5"
+                android:textColor="#999"
                 android:textSize="5pt" />
 
             <EditText
-                android:textColor="#999"
                 android:id="@+id/unity"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:padding="2dp"
+                android:gravity="start"
                 android:text="Kg"
+                android:textColor="#999"
                 android:textSize="5pt" />
         </LinearLayout>
     </LinearLayout>
@@ -48,10 +52,16 @@
         android:id="@+id/price"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
+        android:layout_weight="0.04"
+        android:ems="10"
+        android:gravity="end"
         android:padding="2dp"
         android:paddingBottom="4dp"
         android:paddingTop="4dp"
-        android:gravity="right"
-        android:textSize="18sp"
-        android:text="100.5" />
+        android:text="100.5"
+        android:textSize="18sp" >
+
+        <requestFocus />
+    </EditText>
+
 </LinearLayout>
