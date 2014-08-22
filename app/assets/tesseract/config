@@ -1,1 +1,2 @@
-tessedit_char_whitelist abcdefghijklmnopqrstuvxywzABCDEFGHIJKLMNOPQRSTUVXYWZ0123456789.-,_$+.,=ãéóúíçüâàôêï|\/?!
+tessedit_char_whitelist abcdefghijklmnopqrstuvxywzABCDEFGHIJKLMNOPQRSTUVXYWZ0123456789.-,_$+.,=|\/?!
+tessedit_write_images  true
