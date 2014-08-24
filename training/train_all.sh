@@ -5,12 +5,13 @@
 readonly LANGNAME=nota
 readonly FONTNAME=nota
 
-for a in $LANGNAME.$FONTNAME.exp*.tiff ;
+for i in $@;
 do
-
+	a=${LANGNAME}.${FONTNAME}.exp${i}.tiff
+	echo doing $a
 	BASENAME=`basename $a .tiff`;
 	tesseract $a $BASENAME box.train
-
+	echo done $a
 done
 
 unicharset_extractor $LANGNAME.$FONTNAME.exp*.box

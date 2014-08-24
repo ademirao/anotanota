@@ -1,0 +1,6 @@
+<<<<<<< HEAD
+tessedit_char_whitelist abcdefghijklmnopqrstuvxywzABCDEFGHIJKLMNOPQRSTUVXYWZ0123456789.-,_$+.,=ãéóúíçüâàôêïÃÉÓÚÍÇÜÂÀÔÊÏ|\/?!
+=======
+tessedit_char_whitelist abcdefghijklmnopqrstuvxywzABCDEFGHIJKLMNOPQRSTUVXYWZ0123456789.-,_$+.,=|\/?!
+tessedit_write_images  true
+>>>>>>> 4a0a66dc8e826c2d5c9d49df0e09c34e1e61ce2b
