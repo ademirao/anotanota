@@ -2,24 +2,26 @@
 
 {
 (
-readonly LANGNAME=nota
-readonly FONTNAME=nota
-
-for i in $@;
+export LANGUAGE=nota
+for a in $(ls *.box) ;
 do
-	a=${LANGNAME}.${FONTNAME}.exp${i}.tiff
 	echo doing $a
-	BASENAME=`basename $a .tiff`;
-	tesseract $a $BASENAME box.train
+	BASENAME=`basename $a .box`;
+	tesseract ${BASENAME}.tiff $BASENAME box.train
 	echo done $a
 done
 
-unicharset_extractor $LANGNAME.$FONTNAME.exp*.box
-echo $FONTNAME 0 0 0 0 0 > font_properties
+rm -f font_properties
 
-shapeclustering -F font_properties -U unicharset $LANGNAME.$FONTNAME.exp*.tr
-mftraining -F font_properties -U unicharset -O $LANGNAME.unicharset $LANGNAME.$FONTNAME.exp*.tr
-cntraining $LANGNAME.$FONTNAME.exp*.tr
+for FONTNAME in $(ls *.box | cut -f 2 -d . | sort | uniq); do
+	echo $FONTNAME 0 0 0 0 0 >> font_properties
+done;
+
+unicharset_extractor *.box
+
+shapeclustering -F font_properties -U unicharset *.tr
+mftraining -F font_properties -U unicharset -O $LANGNAME.unicharset *.tr
+cntraining *.tr
 
 mkdir -p tessdata
 cp unicharset tessdata/$LANGNAME.unicharset
