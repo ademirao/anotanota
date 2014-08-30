@@ -7,7 +7,7 @@ for a in $(ls *.box) ;
 do
 	echo doing $a
 	BASENAME=`basename $a .box`;
-	tesseract ${BASENAME}.tiff $BASENAME box.train
+	tesseract ${BASENAME}.png $BASENAME box.train
 	echo done $a
 done
 
