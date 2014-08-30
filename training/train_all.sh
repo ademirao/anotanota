@@ -2,7 +2,8 @@
 
 {
 (
-export LANGUAGE=nota
+export LANGNAME=nota
+rm *.tr
 for a in $(ls *.box) ;
 do
 	echo doing $a
@@ -17,6 +18,8 @@ for FONTNAME in $(ls *.box | cut -f 2 -d . | sort | uniq); do
 	echo $FONTNAME 0 0 0 0 0 >> font_properties
 done;
 
+rm unicharset
+
 unicharset_extractor *.box
 
 shapeclustering -F font_properties -U unicharset *.tr
@@ -24,11 +27,11 @@ mftraining -F font_properties -U unicharset -O $LANGNAME.unicharset *.tr
 cntraining *.tr
 
 mkdir -p tessdata
-cp unicharset tessdata/$LANGNAME.unicharset
-cp pffmtable tessdata/$LANGNAME.pffmtable
-cp normproto tessdata/$LANGNAME.normproto
-cp inttemp tessdata/$LANGNAME.inttemp
-cp shapetable  tessdata/$LANGNAME.shapetable
+mv $LANGNAME.unicharset tessdata/$LANGNAME.unicharset
+mv pffmtable tessdata/$LANGNAME.pffmtable
+mv normproto tessdata/$LANGNAME.normproto
+mv inttemp tessdata/$LANGNAME.inttemp
+mv shapetable  tessdata/$LANGNAME.shapetable
 
 cd tessdata
 combine_tessdata $LANGNAME.
