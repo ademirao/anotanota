@@ -6,6 +6,8 @@ import org.anotanota.framework.drawer.NavigationDrawerModule;
 import org.anotanota.pipeline.AnotanotaPipelineModule;
 import org.anotanota.sqlite.SQLiteModule;
 
+import com.googlecode.tesseract.android.TessBaseAPI;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -16,5 +18,10 @@ public class AnotanotaModule {
   Object[] activityModules() {
     return new Object[] { new AnotanotaActivityModule(), new SQLiteModule(),
         new NavigationDrawerModule() };
+  }
+
+  @Provides
+  TessBaseAPI getTessBaseApi() {
+    return new TessBaseAPI();
   }
 }

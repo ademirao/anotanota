@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.anotanota.pipeline.AnotanotaPipeline.TesseractPath;
+
 import android.content.res.AssetManager;
 
 import com.google.common.base.Joiner;
@@ -23,7 +25,7 @@ public class TesseractInstaller {
 
   @Inject
   public TesseractInstaller(AssetManager assetManager,
-    @Anotanota.TesseractInstallPath String tesseractPath,
+    @TesseractPath String tesseractPath,
     @Anotanota.TesseractAssetsPath String tesseractAssetsPath) {
     mAssetManager = assetManager;
     mTesseractPath = tesseractPath;

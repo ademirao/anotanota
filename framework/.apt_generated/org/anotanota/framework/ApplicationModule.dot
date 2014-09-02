@@ -1,0 +1,10 @@
+digraph G1 {
+  concentrate = true;
+  n2 [label="@App$ApplicationScope Scope"];
+  n2 -> Application;
+  n3 [label="@App$MainThread Executor"];
+  n4 [label="@App$MainThread Handler"];
+  n3 -> n4;
+  n5 [label="@App$ActivityModules Object[]"];
+  Activity -> n5;
+}

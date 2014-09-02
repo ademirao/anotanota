@@ -14,7 +14,7 @@ import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(library = true, addsTo = ActivityModule.class, complete = false)
+@Module(library = true, addsTo = ActivityModule.class)
 public class SQLiteModule {
   @Provides
   List<SQLiteDataAccessModule> dataSources(Context context) {
@@ -23,7 +23,7 @@ public class SQLiteModule {
         new SQLiteDataAccessConfig("danielavvaz")));
   }
 
-  @Module(library = true, complete = false, addsTo = SQLiteModule.class)
+  @Module(library = true, addsTo = SQLiteModule.class)
   public static class SQLiteDataAccessModule {
     private final SQLiteDataAccessConfig mConfig;
 

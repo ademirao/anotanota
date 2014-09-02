@@ -1,0 +1,11 @@
+<resources>
+
+    <string name="app_name">Framework</string>
+        <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="action_example" translatable="false">Settings</string>
+    <string name="action_settings" translatable="false">Settings</string>
+    
+    <string name="drawer_open" translatable="false">Opening...</string>
+    <string name="drawer_close" translatable="false">Closing...</string>
+</resources>

@@ -8,27 +8,17 @@ public interface Anotanota {
 
   }
 
-  @Qualifier
-  public @interface TesseractAssetsPath {
-
-  }
-
-  @Qualifier
-  public @interface TesseractConfig {
-
-  }
-
-  @Qualifier
-  public @interface TesseractInstallPath {
-
-  }
-
   public @interface Views {
 
     @Qualifier
     public @interface TabsFrame {
 
     }
+  }
+
+  @Qualifier
+  public @interface TesseractAssetsPath {
+
   }
 
 }

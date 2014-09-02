@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -15,25 +16,28 @@ import javax.inject.Singleton;
 import org.anotanota.framework.Activity;
 import org.anotanota.framework.ActivityModule;
 import org.anotanota.framework.App;
-import org.anotanota.framework.Scope;
 import org.anotanota.framework.UIViewController;
 import org.anotanota.framework.drawer.NavigationDrawer;
 import org.anotanota.framework.drawer.NavigationDrawerModule;
 import org.anotanota.framework.drawer.NavigationDrawerViewController;
 import org.anotanota.framework.pager.Pager;
 import org.anotanota.framework.pager.PagerAdapter;
-import org.anotanota.framework.pipeline.Pipeline;
+import org.anotanota.pipeline.AnotanotaPipeline;
+import org.anotanota.pipeline.OCR;
 import org.anotanota.sqlite.SQLiteModule;
 import org.anotanota.sqlite.SQLiteModule.SQLiteDataAccessModule;
+import org.dagger.scope.Scope;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.common.base.Joiner;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.googlecode.tesseract.android.TessBaseAPI;
@@ -58,18 +62,6 @@ public class AnotanotaActivityModule {
       titles.add(module.getName());
     }
     return titles;
-  }
-
-  @Provides
-  @NavigationDrawer.Layout
-  DrawerLayout drawerLayout(Activity activity) {
-    return (DrawerLayout) activity.findViewById(R.id.drawer_layout);
-  }
-
-  @Provides
-  @NavigationDrawer.View
-  ListView drawerView(Activity activity) {
-    return (ListView) activity.findViewById(R.id.left_drawer);
   }
 
   @Provides
@@ -108,7 +100,6 @@ public class AnotanotaActivityModule {
 
   @Provides
   @Singleton
-  @Pipeline.Executor
   ThreadPoolExecutor getThreadPool() {
     BlockingQueue<Runnable> queue = new ArrayBlockingQueue<Runnable>(10);
 
@@ -117,7 +108,6 @@ public class AnotanotaActivityModule {
 
   @Provides
   @Singleton
-  @Pipeline.Executor
   ListeningExecutorService getService(ThreadPoolExecutor threadPool) {
     return MoreExecutors.listeningDecorator(threadPool);
   }
@@ -125,7 +115,8 @@ public class AnotanotaActivityModule {
   @Provides
   @Anotanota.Views.TabsFrame
   ViewPager pagerView(Activity activity) {
-    return (ViewPager) activity.findViewById(R.id.pager_view);
+    return (ViewPager) activity
+        .findViewById(org.anotanota.framework.R.id.pager_view);
   }
 
   @Provides
@@ -145,7 +136,7 @@ public class AnotanotaActivityModule {
       File.separatorChar).join(kTesseractInstalationDirPath, "config");
 
   @Provides
-  @Anotanota.TesseractInstallPath
+  @AnotanotaPipeline.TesseractPath
   String getInstallPath() {
     return kTesseractInstalationDirPath;
   }
@@ -157,24 +148,45 @@ public class AnotanotaActivityModule {
   }
 
   @Provides
-  @Anotanota.TesseractConfig
+  @AnotanotaPipeline.TesseractConfig
   String getTesseractConfig() {
     return kTesseractConfigPath;
   }
 
   @Provides
-  @Anotanota.SelectedPaths
-  File[] getSelectedPaths(@Anotanota.TesseractInstallPath String installPath) {
-    return new File[] { new File(Joiner.on(File.separator).join(installPath,
-        "examples")), };
+  OCR getLoader(final TessBaseAPI tesseract,
+                final ListeningExecutorService service) {
+    return new OCR() {
+
+      @Override
+      public ListenableFuture<String> getUTF8Text(final File file) {
+        System.out.println(" GEt utf 8: " + file);
+        return service.submit(new Callable<String>() {
+
+          @Override
+          public String call() throws Exception {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            options.inPurgeable = true;
+            System.out.println("File size " + file.length());
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(),
+                options);
+            tesseract.setImage(bitmap);
+            try {
+              return tesseract.getUTF8Text();
+            } finally {
+              tesseract.end();
+            }
+          }
+        });
+      }
+    };
   }
 
   @Provides
-  TessBaseAPI baseApi(@Anotanota.TesseractConfig String config,
-                      @Anotanota.TesseractInstallPath String tesseractDir) {
-    TessBaseAPI baseApi = new TessBaseAPI();
-    baseApi.init(tesseractDir, "nota");
-    baseApi.ReadConfigFile(config);
-    return baseApi;
+  @Anotanota.SelectedPaths
+  File[] getSelectedPaths(@AnotanotaPipeline.TesseractPath String installPath) {
+    return new File[] { new File(Joiner.on(File.separator).join(installPath,
+        "examples")), };
   }
 }

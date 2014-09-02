@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/framework"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/android-support-v7-appcompat"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/model"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/pipeline"/>
 	<classpathentry kind="src" path=".apt_generated">
 		<attributes>
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/android-support-v7-appcompat"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/tess-two"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="gen"/>
-	<classpathentry exported="true" kind="lib" path="libs/dagger/dagger-1.2.2.jar" sourcepath="/Users/ademirao/Downloads/dagger-master.zip"/>
-	<classpathentry exported="true" kind="lib" path="libs/dagger/dagger-compiler-1.2.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/guava-17.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/dagger/javawriter-2.5.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/dagger/javax.inject-1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
