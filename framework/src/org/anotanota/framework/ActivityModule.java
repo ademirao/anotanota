@@ -2,6 +2,7 @@ package org.anotanota.framework;
 
 import org.anotanota.framework.App.MainViewController;
 import org.anotanota.framework.drawer.NavigationDrawer;
+import org.anotanota.framework.drawer.NavigationDrawerModule;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -14,29 +15,13 @@ import dagger.Module;
 import dagger.Provides;
 
 /**
- * THis module requires @App.ActivityModules/Object[] to be available.
- * 
  * @author ademirao
  */
-@Module(library = true, injects = { Activity.ActivityState.class }, includes = {ActivityModule.Dependencies.class }, overrides = true, addsTo = ApplicationModule.class)
+@Module(library = true, includes = { NavigationDrawerModule.class },
+		addsTo = ApplicationModule.class,
+		injects = Activity.ActivityState.class,
+		complete = false)
 public class ActivityModule {
-
-  @Module(library = true)
-  public static class Dependencies {
-    @Provides
-    @MainViewController
-    UIViewController getMainViewController() {
-      throw Application.getMissingBind(MainViewController.class,
-          UIViewController.class);
-    }
-
-    @Provides
-    @NavigationDrawer.Toggle
-    ActionBarDrawerToggle getToggle() {
-      throw Application.getMissingBind(NavigationDrawer.Toggle.class,
-          ActionBarDrawerToggle.class);
-    }
-  }
 
   private final Activity mActivity;
 

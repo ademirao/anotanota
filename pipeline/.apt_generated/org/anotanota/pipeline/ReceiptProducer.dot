@@ -1,7 +1,0 @@
-digraph G1 {
-  concentrate = true;
-  n2 [label="ListenableFuture<org.anotanota.model.Receipt>"];
-  n2 -> File;
-  n2 -> ReceiptsDataAccess;
-  n2 -> OCR;
-}

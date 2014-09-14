@@ -8,13 +8,12 @@ import javax.inject.Inject;
 import org.anotanota.framework.App.MainThread;
 import org.anotanota.framework.Navigation;
 import org.anotanota.framework.UIViewController;
-import org.anotanota.framework.pipeline.Pipeline;
 import org.anotanota.model.Receipt;
 import org.anotanota.model.ReceiptItem;
 import org.anotanota.model.ReceiptItemsDataAccess;
 import org.anotanota.model.ReceiptsDataAccess;
 import org.anotanota.pipeline.AnotanotaPipeline.ItemsFromString;
-import org.anotanota.pipeline.InputReceiptProducer;
+import org.anotanota.pipeline.framework.Pipeline;
 import org.anotanota.views.ArrayAdapterHelper;
 
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -28,7 +27,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public class ReceiptsViewController implements UIViewController {
@@ -39,7 +37,6 @@ public class ReceiptsViewController implements UIViewController {
   private final Navigation mNavigation;
   private final LayoutInflater mLayoutInflater;
   private final Pipeline mPipeline;
-  private final Object[] mProducers;
 
   @Inject
   public ReceiptsViewController(LayoutInflater layoutInflater,
@@ -47,8 +44,7 @@ public class ReceiptsViewController implements UIViewController {
     ReceiptsDataAccess receiptsDataAccess,
     ReceiptItemsDataAccess receiptItemsDataAccess,
     Navigation navigation,
-    Pipeline pipeline,
-    @ItemsFromString Object[] producers,
+    @ItemsFromString Pipeline pipeline,
     @MainThread Executor executor) {
     mDataAccess = receiptsDataAccess;
     mListViewBuilder = arrayAdapterBuilder;
@@ -56,7 +52,6 @@ public class ReceiptsViewController implements UIViewController {
     mNavigation = navigation;
     mItemsDataAccess = receiptItemsDataAccess;
     mLayoutInflater = layoutInflater;
-    mProducers = producers;
     mPipeline = pipeline;
   }
 
@@ -116,9 +111,8 @@ public class ReceiptsViewController implements UIViewController {
             EditText textView = (EditText) view
                 .findViewById(R.id.receipt_content);
             textView.setText(receipt.getContent());
-            final ListenableFuture<ReceiptItem> future = mPipeline.produce(
-                ReceiptItem.class,
-                Lists.asList(new InputReceiptProducer(receipt), mProducers));
+            final ListenableFuture<ReceiptItem> future = mPipeline
+                .produce(ReceiptItem.class);
             future.addListener(new Runnable() {
 
               @Override

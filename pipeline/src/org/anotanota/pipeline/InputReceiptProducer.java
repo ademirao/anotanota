@@ -1,6 +1,6 @@
 package org.anotanota.pipeline;
 
-import org.anotanota.framework.pipeline.Product;
+import org.anotanota.pipeline.framework.Product;
 import org.anotanota.model.Receipt;
 
 import dagger.Module;

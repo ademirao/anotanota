@@ -10,18 +10,9 @@ import android.os.Looper;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(library = true, injects = Activity.class, includes = { ApplicationModule.Dependencies.class })
+@Module(library = true)
 public class ApplicationModule {
   private final Application mApplication;
-
-  @Module(library = true)
-  public static class Dependencies {
-    @Provides
-    @ActivityModules
-    Object[] getModules() {
-      throw Application.getMissingBind(ActivityModules.class, Object.class);
-    }
-  }
 
   public ApplicationModule(Application app) {
     mApplication = app;

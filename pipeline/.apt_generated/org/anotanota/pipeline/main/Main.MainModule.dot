@@ -1,0 +1,10 @@
+digraph G1 {
+  concentrate = true;
+  n2 [label="@AnotanotaPipeline$FullPipeline Pipeline"];
+  n2 -> ListeningExecutorService;
+  n2 -> Scope;
+  CommandLine -> Options;
+  Main -> Pipeline;
+  Pipeline -> n2;
+  Pipeline -> CommandLine;
+}

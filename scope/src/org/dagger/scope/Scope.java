@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import dagger.Module;
 import dagger.ObjectGraph;
-import dagger.Provides;
 
 public class Scope {
   private final ObjectGraph mObjectGraph;
@@ -44,19 +42,5 @@ public class Scope {
     Scope s = new Scope(graph);
     module.setScope(s);
     return s;
-  }
-
-  @Module(library = true)
-  static class ScopeModule {
-    private Scope mScope;
-
-    private void setScope(Scope scope) {
-      mScope = scope;
-    }
-
-    @Provides
-    Scope getScope() {
-      return mScope;
-    }
   }
 }

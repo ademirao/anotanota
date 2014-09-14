@@ -9,5 +9,7 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="libs/commons-cli-1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/commons-exec-1.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

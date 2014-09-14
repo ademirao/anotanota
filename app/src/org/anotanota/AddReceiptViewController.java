@@ -7,10 +7,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.anotanota.framework.UIViewController;
-import org.anotanota.framework.pipeline.Pipeline;
 import org.anotanota.model.Receipt;
 import org.anotanota.pipeline.AnotanotaPipeline.FullPipeline;
-import org.anotanota.pipeline.InputFileProducer;
+import org.anotanota.pipeline.framework.Pipeline;
 import org.anotanota.views.ArrayAdapterHelper;
 
 import android.content.Context;
@@ -27,14 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 
 public class AddReceiptViewController implements UIViewController {
   private final ActionBar mActionBar;
   private final Context mContext;
   private final LayoutInflater mLayoutInflater;
   private final File[] mSelectedPaths;
-  private final Object[] mProducers;
   private final Pipeline mPipeline;
   private final ArrayAdapterHelper mArrayAdapterHelper;
 
@@ -44,14 +41,12 @@ public class AddReceiptViewController implements UIViewController {
     ArrayAdapterHelper arrayAdapterBuilder,
     LayoutInflater layoutInflater,
     @Anotanota.SelectedPaths File[] selectedPaths,
-    @FullPipeline Object[] producers,
-    Pipeline pipeline) {
+    @FullPipeline Pipeline pipeline) {
     mSelectedPaths = selectedPaths;
     mActionBar = actionBar;
     mContext = context;
     mLayoutInflater = layoutInflater;
     mPipeline = pipeline;
-    mProducers = producers;
     mArrayAdapterHelper = arrayAdapterBuilder;
   }
 
@@ -116,8 +111,7 @@ public class AddReceiptViewController implements UIViewController {
     textView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        mPipeline.produce(Receipt.class,
-            Lists.<Object> asList(new InputFileProducer(file), mProducers));
+        mPipeline.produce(Receipt.class);
         Toast.makeText(mContext, "Ocring " + file.getAbsolutePath() + " ...",
             Toast.LENGTH_SHORT).show();
       }

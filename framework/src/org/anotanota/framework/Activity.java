@@ -23,10 +23,6 @@ import android.view.MenuItem;
 public class Activity extends ActionBarActivity {
   Application mApplication;
 
-  @Inject
-  @App.ActivityModules
-  Object[] mActivityModules;
-
   ActivityState mState;
 
   public static class ActivityState {
@@ -83,11 +79,8 @@ public class Activity extends ActionBarActivity {
     mApplication = ((Application) getApplication());
     setContentView(R.layout.activity_main);
     Scope appScope = mApplication.getAppScope();
-    appScope.getGraph().inject(this);
-    ArrayList<Object> modules = new ArrayList<Object>(
-        Arrays.asList(mActivityModules));
-    modules.add(new ActivityModule(this));
-    mState = appScope.newChild(modules.toArray()).getGraph()
+    mState = appScope
+    		.newChild(mApplication.getModulesForActivity(this)).getGraph()
         .get(ActivityState.class);
     mState.mNavigation.navigateTo(mState.mMainViewController);
   }

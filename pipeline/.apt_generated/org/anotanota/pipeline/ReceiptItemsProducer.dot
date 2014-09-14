@@ -1,6 +1,0 @@
-digraph G1 {
-  concentrate = true;
-  n2 [label="org.anotanota.model.ReceiptItem"];
-  n2 -> Receipt;
-  n2 -> ReceiptItemsDataAccess;
-}

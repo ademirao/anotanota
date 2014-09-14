@@ -14,12 +14,12 @@ import javax.inject.Provider;
  * instance provision of types served by {@code @Provides} methods.
  */
 public final class ReceiptProducer$$ModuleAdapter extends ModuleAdapter<ReceiptProducer> {
-  private static final String[] INJECTS = { "members/org.anotanota.model.Receipt", };
+  private static final String[] INJECTS = { };
   private static final Class<?>[] STATIC_INJECTIONS = { };
-  private static final Class<?>[] INCLUDES = { org.anotanota.pipeline.ReceiptProducer.Inputs.class, };
+  private static final Class<?>[] INCLUDES = { };
 
   public ReceiptProducer$$ModuleAdapter() {
-    super(org.anotanota.pipeline.ReceiptProducer.class, INJECTS, STATIC_INJECTIONS, true /*overrides*/, INCLUDES, true /*complete*/, true /*library*/);
+    super(org.anotanota.pipeline.ReceiptProducer.class, INJECTS, STATIC_INJECTIONS, false /*overrides*/, INCLUDES, false /*complete*/, true /*library*/);
   }
 
   @Override
@@ -33,28 +33,27 @@ public final class ReceiptProducer$$ModuleAdapter extends ModuleAdapter<ReceiptP
    */
   @Override
   public void getBindings(BindingsGroup bindings, ReceiptProducer module) {
-    bindings.contributeProvidesBinding("com.google.common.util.concurrent.ListenableFuture<org.anotanota.model.Receipt>", new GetResultProvidesAdapter(module));
+    bindings.contributeProvidesBinding("org.anotanota.model.Receipt", new GetResultProvidesAdapter(module));
   }
 
   /**
-   * A {@code Binding<com.google.common.util.concurrent.ListenableFuture<org.anotanota.model.Receipt>>} implementation which satisfies
+   * A {@code Binding<org.anotanota.model.Receipt>} implementation which satisfies
    * Dagger's infrastructure requirements including:
    *
-   * Owning the dependency links between {@code com.google.common.util.concurrent.ListenableFuture<org.anotanota.model.Receipt>} and its
+   * Owning the dependency links between {@code org.anotanota.model.Receipt} and its
    * dependencies.
    *
-   * Being a {@code Provider<com.google.common.util.concurrent.ListenableFuture<org.anotanota.model.Receipt>>} and handling creation and
+   * Being a {@code Provider<org.anotanota.model.Receipt>} and handling creation and
    * preparation of object instances.
    */
-  public static final class GetResultProvidesAdapter extends ProvidesBinding<com.google.common.util.concurrent.ListenableFuture<org.anotanota.model.Receipt>>
-      implements Provider<com.google.common.util.concurrent.ListenableFuture<org.anotanota.model.Receipt>> {
+  public static final class GetResultProvidesAdapter extends ProvidesBinding<org.anotanota.model.Receipt>
+      implements Provider<org.anotanota.model.Receipt> {
     private final ReceiptProducer module;
     private Binding<java.io.File> file;
     private Binding<OCR> ocr;
-    private Binding<org.anotanota.model.ReceiptsDataAccess> receiptsDA;
 
     public GetResultProvidesAdapter(ReceiptProducer module) {
-      super("com.google.common.util.concurrent.ListenableFuture<org.anotanota.model.Receipt>", NOT_SINGLETON, "org.anotanota.pipeline.ReceiptProducer", "getResult");
+      super("org.anotanota.model.Receipt", NOT_SINGLETON, "org.anotanota.pipeline.ReceiptProducer", "getResult");
       this.module = module;
       setLibrary(true);
     }
@@ -68,7 +67,6 @@ public final class ReceiptProducer$$ModuleAdapter extends ModuleAdapter<ReceiptP
     public void attach(Linker linker) {
       file = (Binding<java.io.File>) linker.requestBinding("java.io.File", ReceiptProducer.class, getClass().getClassLoader());
       ocr = (Binding<OCR>) linker.requestBinding("org.anotanota.pipeline.OCR", ReceiptProducer.class, getClass().getClassLoader());
-      receiptsDA = (Binding<org.anotanota.model.ReceiptsDataAccess>) linker.requestBinding("org.anotanota.model.ReceiptsDataAccess", ReceiptProducer.class, getClass().getClassLoader());
     }
 
     /**
@@ -79,16 +77,15 @@ public final class ReceiptProducer$$ModuleAdapter extends ModuleAdapter<ReceiptP
     public void getDependencies(Set<Binding<?>> getBindings, Set<Binding<?>> injectMembersBindings) {
       getBindings.add(file);
       getBindings.add(ocr);
-      getBindings.add(receiptsDA);
     }
 
     /**
      * Returns the fully provisioned instance satisfying the contract for
-     * {@code Provider<com.google.common.util.concurrent.ListenableFuture<org.anotanota.model.Receipt>>}.
+     * {@code Provider<org.anotanota.model.Receipt>}.
      */
     @Override
-    public com.google.common.util.concurrent.ListenableFuture<org.anotanota.model.Receipt> get() {
-      return module.getResult(file.get(), ocr.get(), receiptsDA.get());
+    public org.anotanota.model.Receipt get() {
+      return module.getResult(file.get(), ocr.get());
     }
   }
 }

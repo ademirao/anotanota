@@ -14,12 +14,12 @@ import javax.inject.Provider;
  * instance provision of types served by {@code @Provides} methods.
  */
 public final class ReceiptItemsProducer$$ModuleAdapter extends ModuleAdapter<ReceiptItemsProducer> {
-  private static final String[] INJECTS = { "members/org.anotanota.model.ReceiptItem", };
+  private static final String[] INJECTS = { "members/org.anotanota.pipeline.ReceiptItemsProducer$Result", };
   private static final Class<?>[] STATIC_INJECTIONS = { };
-  private static final Class<?>[] INCLUDES = { org.anotanota.pipeline.ReceiptItemsProducer.Inputs.class, };
+  private static final Class<?>[] INCLUDES = { };
 
   public ReceiptItemsProducer$$ModuleAdapter() {
-    super(org.anotanota.pipeline.ReceiptItemsProducer.class, INJECTS, STATIC_INJECTIONS, true /*overrides*/, INCLUDES, true /*complete*/, true /*library*/);
+    super(org.anotanota.pipeline.ReceiptItemsProducer.class, INJECTS, STATIC_INJECTIONS, false /*overrides*/, INCLUDES, false /*complete*/, true /*library*/);
   }
 
   @Override
@@ -33,27 +33,26 @@ public final class ReceiptItemsProducer$$ModuleAdapter extends ModuleAdapter<Rec
    */
   @Override
   public void getBindings(BindingsGroup bindings, ReceiptItemsProducer module) {
-    bindings.contributeProvidesBinding("org.anotanota.model.ReceiptItem", new GetReceiptItemsProvidesAdapter(module));
+    bindings.contributeProvidesBinding("java.util.List<org.anotanota.model.ReceiptItem>", new ProduceProvidesAdapter(module));
   }
 
   /**
-   * A {@code Binding<org.anotanota.model.ReceiptItem>} implementation which satisfies
+   * A {@code Binding<java.util.List<org.anotanota.model.ReceiptItem>>} implementation which satisfies
    * Dagger's infrastructure requirements including:
    *
-   * Owning the dependency links between {@code org.anotanota.model.ReceiptItem} and its
+   * Owning the dependency links between {@code java.util.List<org.anotanota.model.ReceiptItem>} and its
    * dependencies.
    *
-   * Being a {@code Provider<org.anotanota.model.ReceiptItem>} and handling creation and
+   * Being a {@code Provider<java.util.List<org.anotanota.model.ReceiptItem>>} and handling creation and
    * preparation of object instances.
    */
-  public static final class GetReceiptItemsProvidesAdapter extends ProvidesBinding<org.anotanota.model.ReceiptItem>
-      implements Provider<org.anotanota.model.ReceiptItem> {
+  public static final class ProduceProvidesAdapter extends ProvidesBinding<java.util.List<org.anotanota.model.ReceiptItem>>
+      implements Provider<java.util.List<org.anotanota.model.ReceiptItem>> {
     private final ReceiptItemsProducer module;
     private Binding<org.anotanota.model.Receipt> receipt;
-    private Binding<org.anotanota.model.ReceiptItemsDataAccess> itemsDA;
 
-    public GetReceiptItemsProvidesAdapter(ReceiptItemsProducer module) {
-      super("org.anotanota.model.ReceiptItem", NOT_SINGLETON, "org.anotanota.pipeline.ReceiptItemsProducer", "getReceiptItems");
+    public ProduceProvidesAdapter(ReceiptItemsProducer module) {
+      super("java.util.List<org.anotanota.model.ReceiptItem>", NOT_SINGLETON, "org.anotanota.pipeline.ReceiptItemsProducer", "produce");
       this.module = module;
       setLibrary(true);
     }
@@ -66,7 +65,6 @@ public final class ReceiptItemsProducer$$ModuleAdapter extends ModuleAdapter<Rec
     @SuppressWarnings("unchecked")
     public void attach(Linker linker) {
       receipt = (Binding<org.anotanota.model.Receipt>) linker.requestBinding("org.anotanota.model.Receipt", ReceiptItemsProducer.class, getClass().getClassLoader());
-      itemsDA = (Binding<org.anotanota.model.ReceiptItemsDataAccess>) linker.requestBinding("org.anotanota.model.ReceiptItemsDataAccess", ReceiptItemsProducer.class, getClass().getClassLoader());
     }
 
     /**
@@ -76,16 +74,15 @@ public final class ReceiptItemsProducer$$ModuleAdapter extends ModuleAdapter<Rec
     @Override
     public void getDependencies(Set<Binding<?>> getBindings, Set<Binding<?>> injectMembersBindings) {
       getBindings.add(receipt);
-      getBindings.add(itemsDA);
     }
 
     /**
      * Returns the fully provisioned instance satisfying the contract for
-     * {@code Provider<org.anotanota.model.ReceiptItem>}.
+     * {@code Provider<java.util.List<org.anotanota.model.ReceiptItem>>}.
      */
     @Override
-    public org.anotanota.model.ReceiptItem get() {
-      return module.getReceiptItems(receipt.get(), itemsDA.get());
+    public java.util.List<org.anotanota.model.ReceiptItem> get() {
+      return module.produce(receipt.get());
     }
   }
 }

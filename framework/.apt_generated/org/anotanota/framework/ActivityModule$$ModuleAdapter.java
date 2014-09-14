@@ -16,10 +16,10 @@ import javax.inject.Provider;
 public final class ActivityModule$$ModuleAdapter extends ModuleAdapter<ActivityModule> {
   private static final String[] INJECTS = { "members/org.anotanota.framework.Activity$ActivityState", };
   private static final Class<?>[] STATIC_INJECTIONS = { };
-  private static final Class<?>[] INCLUDES = { org.anotanota.framework.ActivityModule.Dependencies.class, };
+  private static final Class<?>[] INCLUDES = { org.anotanota.framework.drawer.NavigationDrawerModule.class, };
 
   public ActivityModule$$ModuleAdapter() {
-    super(org.anotanota.framework.ActivityModule.class, INJECTS, STATIC_INJECTIONS, true /*overrides*/, INCLUDES, true /*complete*/, true /*library*/);
+    super(org.anotanota.framework.ActivityModule.class, INJECTS, STATIC_INJECTIONS, false /*overrides*/, INCLUDES, false /*complete*/, true /*library*/);
   }
 
   /**
@@ -28,167 +28,13 @@ public final class ActivityModule$$ModuleAdapter extends ModuleAdapter<ActivityM
    */
   @Override
   public void getBindings(BindingsGroup bindings, ActivityModule module) {
-    bindings.contributeProvidesBinding("android.content.res.AssetManager", new GetAssetManagerProvidesAdapter(module));
-    bindings.contributeProvidesBinding("android.support.v7.app.ActionBarActivity", new ActionBarActivityProvidesAdapter(module));
-    bindings.contributeProvidesBinding("android.content.Context", new GetContextProvidesAdapter(module));
-    bindings.contributeProvidesBinding("org.anotanota.framework.Activity", new ActivityProvidesAdapter(module));
     bindings.contributeProvidesBinding("android.view.LayoutInflater", new ActivityLayoutInflaterProvidesAdapter(module));
+    bindings.contributeProvidesBinding("android.support.v7.app.ActionBarActivity", new ActionBarActivityProvidesAdapter(module));
+    bindings.contributeProvidesBinding("org.anotanota.framework.Activity", new ActivityProvidesAdapter(module));
     bindings.contributeProvidesBinding("android.support.v4.app.FragmentManager", new FragmentManagerProvidesAdapter(module));
+    bindings.contributeProvidesBinding("android.content.res.AssetManager", new GetAssetManagerProvidesAdapter(module));
+    bindings.contributeProvidesBinding("android.content.Context", new GetContextProvidesAdapter(module));
     bindings.contributeProvidesBinding("android.support.v7.app.ActionBar", new ActionBarProvidesAdapter(module));
-  }
-
-  /**
-   * A {@code Binding<android.content.res.AssetManager>} implementation which satisfies
-   * Dagger's infrastructure requirements including:
-   *
-   * Owning the dependency links between {@code android.content.res.AssetManager} and its
-   * dependencies.
-   *
-   * Being a {@code Provider<android.content.res.AssetManager>} and handling creation and
-   * preparation of object instances.
-   */
-  public static final class GetAssetManagerProvidesAdapter extends ProvidesBinding<android.content.res.AssetManager>
-      implements Provider<android.content.res.AssetManager> {
-    private final ActivityModule module;
-    private Binding<android.support.v7.app.ActionBarActivity> activity;
-
-    public GetAssetManagerProvidesAdapter(ActivityModule module) {
-      super("android.content.res.AssetManager", NOT_SINGLETON, "org.anotanota.framework.ActivityModule", "getAssetManager");
-      this.module = module;
-      setLibrary(true);
-    }
-
-    /**
-     * Used internally to link bindings/providers together at run time
-     * according to their dependency graph.
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void attach(Linker linker) {
-      activity = (Binding<android.support.v7.app.ActionBarActivity>) linker.requestBinding("android.support.v7.app.ActionBarActivity", ActivityModule.class, getClass().getClassLoader());
-    }
-
-    /**
-     * Used internally obtain dependency information, such as for cyclical
-     * graph detection.
-     */
-    @Override
-    public void getDependencies(Set<Binding<?>> getBindings, Set<Binding<?>> injectMembersBindings) {
-      getBindings.add(activity);
-    }
-
-    /**
-     * Returns the fully provisioned instance satisfying the contract for
-     * {@code Provider<android.content.res.AssetManager>}.
-     */
-    @Override
-    public android.content.res.AssetManager get() {
-      return module.getAssetManager(activity.get());
-    }
-  }
-
-  /**
-   * A {@code Binding<android.support.v7.app.ActionBarActivity>} implementation which satisfies
-   * Dagger's infrastructure requirements including:
-   *
-   * Being a {@code Provider<android.support.v7.app.ActionBarActivity>} and handling creation and
-   * preparation of object instances.
-   */
-  public static final class ActionBarActivityProvidesAdapter extends ProvidesBinding<android.support.v7.app.ActionBarActivity>
-      implements Provider<android.support.v7.app.ActionBarActivity> {
-    private final ActivityModule module;
-
-    public ActionBarActivityProvidesAdapter(ActivityModule module) {
-      super("android.support.v7.app.ActionBarActivity", NOT_SINGLETON, "org.anotanota.framework.ActivityModule", "actionBarActivity");
-      this.module = module;
-      setLibrary(true);
-    }
-
-    /**
-     * Returns the fully provisioned instance satisfying the contract for
-     * {@code Provider<android.support.v7.app.ActionBarActivity>}.
-     */
-    @Override
-    public android.support.v7.app.ActionBarActivity get() {
-      return module.actionBarActivity();
-    }
-  }
-
-  /**
-   * A {@code Binding<android.content.Context>} implementation which satisfies
-   * Dagger's infrastructure requirements including:
-   *
-   * Owning the dependency links between {@code android.content.Context} and its
-   * dependencies.
-   *
-   * Being a {@code Provider<android.content.Context>} and handling creation and
-   * preparation of object instances.
-   */
-  public static final class GetContextProvidesAdapter extends ProvidesBinding<android.content.Context>
-      implements Provider<android.content.Context> {
-    private final ActivityModule module;
-    private Binding<android.support.v7.app.ActionBarActivity> activity;
-
-    public GetContextProvidesAdapter(ActivityModule module) {
-      super("android.content.Context", NOT_SINGLETON, "org.anotanota.framework.ActivityModule", "getContext");
-      this.module = module;
-      setLibrary(true);
-    }
-
-    /**
-     * Used internally to link bindings/providers together at run time
-     * according to their dependency graph.
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void attach(Linker linker) {
-      activity = (Binding<android.support.v7.app.ActionBarActivity>) linker.requestBinding("android.support.v7.app.ActionBarActivity", ActivityModule.class, getClass().getClassLoader());
-    }
-
-    /**
-     * Used internally obtain dependency information, such as for cyclical
-     * graph detection.
-     */
-    @Override
-    public void getDependencies(Set<Binding<?>> getBindings, Set<Binding<?>> injectMembersBindings) {
-      getBindings.add(activity);
-    }
-
-    /**
-     * Returns the fully provisioned instance satisfying the contract for
-     * {@code Provider<android.content.Context>}.
-     */
-    @Override
-    public android.content.Context get() {
-      return module.getContext(activity.get());
-    }
-  }
-
-  /**
-   * A {@code Binding<org.anotanota.framework.Activity>} implementation which satisfies
-   * Dagger's infrastructure requirements including:
-   *
-   * Being a {@code Provider<org.anotanota.framework.Activity>} and handling creation and
-   * preparation of object instances.
-   */
-  public static final class ActivityProvidesAdapter extends ProvidesBinding<Activity>
-      implements Provider<Activity> {
-    private final ActivityModule module;
-
-    public ActivityProvidesAdapter(ActivityModule module) {
-      super("org.anotanota.framework.Activity", NOT_SINGLETON, "org.anotanota.framework.ActivityModule", "activity");
-      this.module = module;
-      setLibrary(true);
-    }
-
-    /**
-     * Returns the fully provisioned instance satisfying the contract for
-     * {@code Provider<org.anotanota.framework.Activity>}.
-     */
-    @Override
-    public Activity get() {
-      return module.activity();
-    }
   }
 
   /**
@@ -242,6 +88,60 @@ public final class ActivityModule$$ModuleAdapter extends ModuleAdapter<ActivityM
   }
 
   /**
+   * A {@code Binding<android.support.v7.app.ActionBarActivity>} implementation which satisfies
+   * Dagger's infrastructure requirements including:
+   *
+   * Being a {@code Provider<android.support.v7.app.ActionBarActivity>} and handling creation and
+   * preparation of object instances.
+   */
+  public static final class ActionBarActivityProvidesAdapter extends ProvidesBinding<android.support.v7.app.ActionBarActivity>
+      implements Provider<android.support.v7.app.ActionBarActivity> {
+    private final ActivityModule module;
+
+    public ActionBarActivityProvidesAdapter(ActivityModule module) {
+      super("android.support.v7.app.ActionBarActivity", NOT_SINGLETON, "org.anotanota.framework.ActivityModule", "actionBarActivity");
+      this.module = module;
+      setLibrary(true);
+    }
+
+    /**
+     * Returns the fully provisioned instance satisfying the contract for
+     * {@code Provider<android.support.v7.app.ActionBarActivity>}.
+     */
+    @Override
+    public android.support.v7.app.ActionBarActivity get() {
+      return module.actionBarActivity();
+    }
+  }
+
+  /**
+   * A {@code Binding<org.anotanota.framework.Activity>} implementation which satisfies
+   * Dagger's infrastructure requirements including:
+   *
+   * Being a {@code Provider<org.anotanota.framework.Activity>} and handling creation and
+   * preparation of object instances.
+   */
+  public static final class ActivityProvidesAdapter extends ProvidesBinding<Activity>
+      implements Provider<Activity> {
+    private final ActivityModule module;
+
+    public ActivityProvidesAdapter(ActivityModule module) {
+      super("org.anotanota.framework.Activity", NOT_SINGLETON, "org.anotanota.framework.ActivityModule", "activity");
+      this.module = module;
+      setLibrary(true);
+    }
+
+    /**
+     * Returns the fully provisioned instance satisfying the contract for
+     * {@code Provider<org.anotanota.framework.Activity>}.
+     */
+    @Override
+    public Activity get() {
+      return module.activity();
+    }
+  }
+
+  /**
    * A {@code Binding<android.support.v4.app.FragmentManager>} implementation which satisfies
    * Dagger's infrastructure requirements including:
    *
@@ -288,6 +188,106 @@ public final class ActivityModule$$ModuleAdapter extends ModuleAdapter<ActivityM
     @Override
     public android.support.v4.app.FragmentManager get() {
       return module.fragmentManager(activity.get());
+    }
+  }
+
+  /**
+   * A {@code Binding<android.content.res.AssetManager>} implementation which satisfies
+   * Dagger's infrastructure requirements including:
+   *
+   * Owning the dependency links between {@code android.content.res.AssetManager} and its
+   * dependencies.
+   *
+   * Being a {@code Provider<android.content.res.AssetManager>} and handling creation and
+   * preparation of object instances.
+   */
+  public static final class GetAssetManagerProvidesAdapter extends ProvidesBinding<android.content.res.AssetManager>
+      implements Provider<android.content.res.AssetManager> {
+    private final ActivityModule module;
+    private Binding<android.support.v7.app.ActionBarActivity> activity;
+
+    public GetAssetManagerProvidesAdapter(ActivityModule module) {
+      super("android.content.res.AssetManager", NOT_SINGLETON, "org.anotanota.framework.ActivityModule", "getAssetManager");
+      this.module = module;
+      setLibrary(true);
+    }
+
+    /**
+     * Used internally to link bindings/providers together at run time
+     * according to their dependency graph.
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void attach(Linker linker) {
+      activity = (Binding<android.support.v7.app.ActionBarActivity>) linker.requestBinding("android.support.v7.app.ActionBarActivity", ActivityModule.class, getClass().getClassLoader());
+    }
+
+    /**
+     * Used internally obtain dependency information, such as for cyclical
+     * graph detection.
+     */
+    @Override
+    public void getDependencies(Set<Binding<?>> getBindings, Set<Binding<?>> injectMembersBindings) {
+      getBindings.add(activity);
+    }
+
+    /**
+     * Returns the fully provisioned instance satisfying the contract for
+     * {@code Provider<android.content.res.AssetManager>}.
+     */
+    @Override
+    public android.content.res.AssetManager get() {
+      return module.getAssetManager(activity.get());
+    }
+  }
+
+  /**
+   * A {@code Binding<android.content.Context>} implementation which satisfies
+   * Dagger's infrastructure requirements including:
+   *
+   * Owning the dependency links between {@code android.content.Context} and its
+   * dependencies.
+   *
+   * Being a {@code Provider<android.content.Context>} and handling creation and
+   * preparation of object instances.
+   */
+  public static final class GetContextProvidesAdapter extends ProvidesBinding<android.content.Context>
+      implements Provider<android.content.Context> {
+    private final ActivityModule module;
+    private Binding<android.support.v7.app.ActionBarActivity> activity;
+
+    public GetContextProvidesAdapter(ActivityModule module) {
+      super("android.content.Context", NOT_SINGLETON, "org.anotanota.framework.ActivityModule", "getContext");
+      this.module = module;
+      setLibrary(true);
+    }
+
+    /**
+     * Used internally to link bindings/providers together at run time
+     * according to their dependency graph.
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void attach(Linker linker) {
+      activity = (Binding<android.support.v7.app.ActionBarActivity>) linker.requestBinding("android.support.v7.app.ActionBarActivity", ActivityModule.class, getClass().getClassLoader());
+    }
+
+    /**
+     * Used internally obtain dependency information, such as for cyclical
+     * graph detection.
+     */
+    @Override
+    public void getDependencies(Set<Binding<?>> getBindings, Set<Binding<?>> injectMembersBindings) {
+      getBindings.add(activity);
+    }
+
+    /**
+     * Returns the fully provisioned instance satisfying the contract for
+     * {@code Provider<android.content.Context>}.
+     */
+    @Override
+    public android.content.Context get() {
+      return module.getContext(activity.get());
     }
   }
 

@@ -5,6 +5,4 @@ digraph G1 {
   n3 [label="@App$MainThread Executor"];
   n4 [label="@App$MainThread Handler"];
   n3 -> n4;
-  n5 [label="@App$ActivityModules Object[]"];
-  Activity -> n5;
 }

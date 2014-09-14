@@ -2,7 +2,7 @@ package org.anotanota.pipeline;
 
 import java.io.File;
 
-import org.anotanota.framework.pipeline.Product;
+import org.anotanota.pipeline.framework.Product;
 
 import dagger.Module;
 import dagger.Provides;

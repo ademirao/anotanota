@@ -14,9 +14,9 @@ import javax.inject.Provider;
  * instance provision of types served by {@code @Provides} methods.
  */
 public final class ApplicationModule$$ModuleAdapter extends ModuleAdapter<ApplicationModule> {
-  private static final String[] INJECTS = { "members/org.anotanota.framework.Activity", };
+  private static final String[] INJECTS = { };
   private static final Class<?>[] STATIC_INJECTIONS = { };
-  private static final Class<?>[] INCLUDES = { org.anotanota.framework.ApplicationModule.Dependencies.class, };
+  private static final Class<?>[] INCLUDES = { };
 
   public ApplicationModule$$ModuleAdapter() {
     super(org.anotanota.framework.ApplicationModule.class, INJECTS, STATIC_INJECTIONS, false /*overrides*/, INCLUDES, true /*complete*/, true /*library*/);
@@ -29,10 +29,10 @@ public final class ApplicationModule$$ModuleAdapter extends ModuleAdapter<Applic
   @Override
   public void getBindings(BindingsGroup bindings, ApplicationModule module) {
     bindings.contributeProvidesBinding("org.anotanota.framework.Application", new ApplicationProvidesAdapter(module));
-    bindings.contributeProvidesBinding("@org.anotanota.framework.App$MainThread()/java.util.concurrent.Executor", new MainthreadExecutorProvidesAdapter(module));
-    bindings.contributeProvidesBinding("@org.anotanota.framework.App$ApplicationScope()/org.dagger.scope.Scope", new ScopeProvidesAdapter(module));
-    bindings.contributeProvidesBinding("@org.anotanota.framework.App$MainThread()/android.os.Handler", new MainLooperProvidesAdapter(module));
     bindings.contributeProvidesBinding("java.util.concurrent.Executor", new ExecutorProvidesAdapter(module));
+    bindings.contributeProvidesBinding("@org.anotanota.framework.App$MainThread()/android.os.Handler", new MainLooperProvidesAdapter(module));
+    bindings.contributeProvidesBinding("@org.anotanota.framework.App$ApplicationScope()/org.dagger.scope.Scope", new ScopeProvidesAdapter(module));
+    bindings.contributeProvidesBinding("@org.anotanota.framework.App$MainThread()/java.util.concurrent.Executor", new MainthreadExecutorProvidesAdapter(module));
   }
 
   /**
@@ -66,40 +66,17 @@ public final class ApplicationModule$$ModuleAdapter extends ModuleAdapter<Applic
    * A {@code Binding<java.util.concurrent.Executor>} implementation which satisfies
    * Dagger's infrastructure requirements including:
    *
-   * Owning the dependency links between {@code java.util.concurrent.Executor} and its
-   * dependencies.
-   *
    * Being a {@code Provider<java.util.concurrent.Executor>} and handling creation and
    * preparation of object instances.
    */
-  public static final class MainthreadExecutorProvidesAdapter extends ProvidesBinding<java.util.concurrent.Executor>
+  public static final class ExecutorProvidesAdapter extends ProvidesBinding<java.util.concurrent.Executor>
       implements Provider<java.util.concurrent.Executor> {
     private final ApplicationModule module;
-    private Binding<android.os.Handler> handler;
 
-    public MainthreadExecutorProvidesAdapter(ApplicationModule module) {
-      super("@org.anotanota.framework.App$MainThread()/java.util.concurrent.Executor", NOT_SINGLETON, "org.anotanota.framework.ApplicationModule", "mainthreadExecutor");
+    public ExecutorProvidesAdapter(ApplicationModule module) {
+      super("java.util.concurrent.Executor", NOT_SINGLETON, "org.anotanota.framework.ApplicationModule", "executor");
       this.module = module;
       setLibrary(true);
-    }
-
-    /**
-     * Used internally to link bindings/providers together at run time
-     * according to their dependency graph.
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void attach(Linker linker) {
-      handler = (Binding<android.os.Handler>) linker.requestBinding("@org.anotanota.framework.App$MainThread()/android.os.Handler", ApplicationModule.class, getClass().getClassLoader());
-    }
-
-    /**
-     * Used internally obtain dependency information, such as for cyclical
-     * graph detection.
-     */
-    @Override
-    public void getDependencies(Set<Binding<?>> getBindings, Set<Binding<?>> injectMembersBindings) {
-      getBindings.add(handler);
     }
 
     /**
@@ -108,7 +85,34 @@ public final class ApplicationModule$$ModuleAdapter extends ModuleAdapter<Applic
      */
     @Override
     public java.util.concurrent.Executor get() {
-      return module.mainthreadExecutor(handler.get());
+      return module.executor();
+    }
+  }
+
+  /**
+   * A {@code Binding<android.os.Handler>} implementation which satisfies
+   * Dagger's infrastructure requirements including:
+   *
+   * Being a {@code Provider<android.os.Handler>} and handling creation and
+   * preparation of object instances.
+   */
+  public static final class MainLooperProvidesAdapter extends ProvidesBinding<android.os.Handler>
+      implements Provider<android.os.Handler> {
+    private final ApplicationModule module;
+
+    public MainLooperProvidesAdapter(ApplicationModule module) {
+      super("@org.anotanota.framework.App$MainThread()/android.os.Handler", NOT_SINGLETON, "org.anotanota.framework.ApplicationModule", "mainLooper");
+      this.module = module;
+      setLibrary(true);
+    }
+
+    /**
+     * Returns the fully provisioned instance satisfying the contract for
+     * {@code Provider<android.os.Handler>}.
+     */
+    @Override
+    public android.os.Handler get() {
+      return module.mainLooper();
     }
   }
 
@@ -163,47 +167,43 @@ public final class ApplicationModule$$ModuleAdapter extends ModuleAdapter<Applic
   }
 
   /**
-   * A {@code Binding<android.os.Handler>} implementation which satisfies
+   * A {@code Binding<java.util.concurrent.Executor>} implementation which satisfies
    * Dagger's infrastructure requirements including:
    *
-   * Being a {@code Provider<android.os.Handler>} and handling creation and
+   * Owning the dependency links between {@code java.util.concurrent.Executor} and its
+   * dependencies.
+   *
+   * Being a {@code Provider<java.util.concurrent.Executor>} and handling creation and
    * preparation of object instances.
    */
-  public static final class MainLooperProvidesAdapter extends ProvidesBinding<android.os.Handler>
-      implements Provider<android.os.Handler> {
+  public static final class MainthreadExecutorProvidesAdapter extends ProvidesBinding<java.util.concurrent.Executor>
+      implements Provider<java.util.concurrent.Executor> {
     private final ApplicationModule module;
+    private Binding<android.os.Handler> handler;
 
-    public MainLooperProvidesAdapter(ApplicationModule module) {
-      super("@org.anotanota.framework.App$MainThread()/android.os.Handler", NOT_SINGLETON, "org.anotanota.framework.ApplicationModule", "mainLooper");
+    public MainthreadExecutorProvidesAdapter(ApplicationModule module) {
+      super("@org.anotanota.framework.App$MainThread()/java.util.concurrent.Executor", NOT_SINGLETON, "org.anotanota.framework.ApplicationModule", "mainthreadExecutor");
       this.module = module;
       setLibrary(true);
     }
 
     /**
-     * Returns the fully provisioned instance satisfying the contract for
-     * {@code Provider<android.os.Handler>}.
+     * Used internally to link bindings/providers together at run time
+     * according to their dependency graph.
      */
     @Override
-    public android.os.Handler get() {
-      return module.mainLooper();
+    @SuppressWarnings("unchecked")
+    public void attach(Linker linker) {
+      handler = (Binding<android.os.Handler>) linker.requestBinding("@org.anotanota.framework.App$MainThread()/android.os.Handler", ApplicationModule.class, getClass().getClassLoader());
     }
-  }
 
-  /**
-   * A {@code Binding<java.util.concurrent.Executor>} implementation which satisfies
-   * Dagger's infrastructure requirements including:
-   *
-   * Being a {@code Provider<java.util.concurrent.Executor>} and handling creation and
-   * preparation of object instances.
-   */
-  public static final class ExecutorProvidesAdapter extends ProvidesBinding<java.util.concurrent.Executor>
-      implements Provider<java.util.concurrent.Executor> {
-    private final ApplicationModule module;
-
-    public ExecutorProvidesAdapter(ApplicationModule module) {
-      super("java.util.concurrent.Executor", NOT_SINGLETON, "org.anotanota.framework.ApplicationModule", "executor");
-      this.module = module;
-      setLibrary(true);
+    /**
+     * Used internally obtain dependency information, such as for cyclical
+     * graph detection.
+     */
+    @Override
+    public void getDependencies(Set<Binding<?>> getBindings, Set<Binding<?>> injectMembersBindings) {
+      getBindings.add(handler);
     }
 
     /**
@@ -212,7 +212,7 @@ public final class ApplicationModule$$ModuleAdapter extends ModuleAdapter<Applic
      */
     @Override
     public java.util.concurrent.Executor get() {
-      return module.executor();
+      return module.mainthreadExecutor(handler.get());
     }
   }
 }

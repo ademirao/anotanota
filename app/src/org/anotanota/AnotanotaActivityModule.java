@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -14,19 +13,19 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.anotanota.framework.Activity;
-import org.anotanota.framework.ActivityModule;
 import org.anotanota.framework.App;
 import org.anotanota.framework.UIViewController;
 import org.anotanota.framework.drawer.NavigationDrawer;
-import org.anotanota.framework.drawer.NavigationDrawerModule;
 import org.anotanota.framework.drawer.NavigationDrawerViewController;
 import org.anotanota.framework.pager.Pager;
 import org.anotanota.framework.pager.PagerAdapter;
 import org.anotanota.pipeline.AnotanotaPipeline;
+import org.anotanota.pipeline.AnotanotaPipelineModule;
 import org.anotanota.pipeline.OCR;
 import org.anotanota.sqlite.SQLiteModule;
 import org.anotanota.sqlite.SQLiteModule.SQLiteDataAccessModule;
 import org.dagger.scope.Scope;
+import org.dagger.scope.ScopeModule;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -37,7 +36,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.common.base.Joiner;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.googlecode.tesseract.android.TessBaseAPI;
@@ -45,13 +43,14 @@ import com.googlecode.tesseract.android.TessBaseAPI;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = { SQLiteModule.class, ActivityModule.class,
-    NavigationDrawerModule.class }, library = true, addsTo = AnotanotaModule.class, overrides = true)
+@Module(includes = { SQLiteModule.class, ScopeModule.class,
+    AnotanotaPipelineModule.class }, library = true, addsTo = AnotanotaModule.class)
 public class AnotanotaActivityModule {
+
   @Provides
   @App.MainViewController
-  public UIViewController mainViewController(MainViewController controller) {
-    return controller;
+  UIViewController getMainVC(MainViewController vc) {
+    return vc;
   }
 
   @Provides
@@ -159,26 +158,21 @@ public class AnotanotaActivityModule {
     return new OCR() {
 
       @Override
-      public ListenableFuture<String> getUTF8Text(final File file) {
+      public String getUTF8Text(final File file) {
         System.out.println(" GEt utf 8: " + file);
-        return service.submit(new Callable<String>() {
 
-          @Override
-          public String call() throws Exception {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            options.inPurgeable = true;
-            System.out.println("File size " + file.length());
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(),
-                options);
-            tesseract.setImage(bitmap);
-            try {
-              return tesseract.getUTF8Text();
-            } finally {
-              tesseract.end();
-            }
-          }
-        });
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        options.inPurgeable = true;
+        System.out.println("File size " + file.length());
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(),
+            options);
+        tesseract.setImage(bitmap);
+        try {
+          return tesseract.getUTF8Text();
+        } finally {
+          tesseract.end();
+        }
       }
     };
   }

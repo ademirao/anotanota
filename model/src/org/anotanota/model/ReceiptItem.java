@@ -76,4 +76,8 @@ public class ReceiptItem {
   public String getContent() {
     return mContent;
   }
+  
+  public String toString() {
+	  return "name: '" + mName + "' content: '" + mContent + "'\n";
+  }
 }
