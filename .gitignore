@@ -1,3 +1,4 @@
 linux
 trained_data
 trash
+*.class
